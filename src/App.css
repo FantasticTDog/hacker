@@ -1,0 +1,87 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Courier New', monospace;
+  background-color: #000;
+  color: #00ff00;
+  overflow: hidden;
+}
+
+.app {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #000;
+}
+
+.hacker-display {
+  width: 80%;
+  height: 70%;
+  background-color: #000;
+  border: 2px solid #00ff00;
+  border-radius: 8px;
+  padding: 20px;
+  font-family: 'Courier New', monospace;
+  font-size: 16px;
+  line-height: 1.5;
+  color: #00ff00;
+  cursor: text;
+  overflow-y: auto;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  transition: all 0.3s ease;
+  box-shadow: 0 0 20px rgba(0, 255, 0, 0.3);
+}
+
+.hacker-display:hover {
+  border-color: #00cc00;
+  box-shadow: 0 0 30px rgba(0, 255, 0, 0.5);
+}
+
+.hacker-display.focused {
+  border-color: #00ff00;
+  box-shadow: 0 0 40px rgba(0, 255, 0, 0.7);
+  outline: none;
+}
+
+.hacker-display:focus {
+  outline: none;
+}
+
+.cursor {
+  animation: blink 1s infinite;
+  color: #00ff00;
+}
+
+@keyframes blink {
+  0%, 50% {
+    opacity: 1;
+  }
+  51%, 100% {
+    opacity: 0;
+  }
+}
+
+/* Scrollbar styling */
+.hacker-display::-webkit-scrollbar {
+  width: 8px;
+}
+
+.hacker-display::-webkit-scrollbar-track {
+  background: #000;
+}
+
+.hacker-display::-webkit-scrollbar-thumb {
+  background: #00ff00;
+  border-radius: 4px;
+}
+
+.hacker-display::-webkit-scrollbar-thumb:hover {
+  background: #00cc00;
+}
