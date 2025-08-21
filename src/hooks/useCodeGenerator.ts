@@ -4,7 +4,7 @@ import topics from '../database/topics';
 import functionVerbs from '../database/functionVerbs';
 import functionNouns from '../database/functionNouns';
 
-const INITIL_SPEED = 1;
+const INITIL_SPEED = 20;
 const INITIAL_COMPLEXITY = 1;
 
 export const useCodeGenerator = () => {
@@ -17,6 +17,8 @@ export const useCodeGenerator = () => {
   const [generatedFunctions, setGeneratedFunctions] = useState<string[]>([]);
   const [maxBlockLength, setMaxBlockLength] = useState(INITIAL_COMPLEXITY);
   const [money, setMoney] = useState(0);
+  const [speedUpgradesBought, setSpeedUpgradesBought] = useState(0);
+  const [complexityUpgradesBought, setComplexityUpgradesBought] = useState(0);
 
   const DISPLAY_FIELD_ID = 'hacker-display-field';
 
@@ -144,6 +146,8 @@ export const useCodeGenerator = () => {
     generatedFunctions,
     maxBlockLength,
     money,
+    speedUpgradesBought,
+    complexityUpgradesBought,
     handleClick,
     handleBlur
   };

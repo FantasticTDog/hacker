@@ -3,6 +3,7 @@ import './App.css';
 import Dashboard from './components/Dashboard';
 import FunctionList from './components/FunctionList';
 import CodeDisplay from './components/CodeDisplay';
+import Shop from './components/Shop';
 import { useCodeGenerator } from './hooks/useCodeGenerator';
 
 const App = () => {
@@ -13,6 +14,8 @@ const App = () => {
     generatedFunctions,
     maxBlockLength,
     money,
+    speedUpgradesBought,
+    complexityUpgradesBought,
     handleClick,
     handleBlur
   } = useCodeGenerator();
@@ -26,7 +29,14 @@ const App = () => {
         money={money}
       />
       <div className="main-content">
-        <FunctionList generatedFunctions={generatedFunctions} />
+        <div className="left-panel">
+          <FunctionList generatedFunctions={generatedFunctions} />
+          <Shop 
+            speedUpgradesBought={speedUpgradesBought}
+            complexityUpgradesBought={complexityUpgradesBought}
+            money={money}
+          />
+        </div>
         <CodeDisplay 
           visibleText={visibleText}
           isFocused={isFocused}
