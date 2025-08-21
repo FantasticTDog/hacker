@@ -5,9 +5,11 @@ interface DashboardProps {
   currentSpeed: number;
   blockLength: number;
   money: number;
+  winningFunction: string;
+  gameWon: boolean;
 }
 
-const Dashboard = ({ totalFunctions, currentSpeed, blockLength, money }: DashboardProps) => {
+const Dashboard = ({ totalFunctions, currentSpeed, blockLength, money, winningFunction, gameWon }: DashboardProps) => {
   const renderProgressBar = (value: number, maxValue: number = 20) => {
     const segments = Math.min(value, maxValue);
     return (
@@ -26,6 +28,10 @@ const Dashboard = ({ totalFunctions, currentSpeed, blockLength, money }: Dashboa
     <div className="dashboard">
       <h3>Hacker Performance Dashboard</h3>
       <div className="metric">
+        <span className="metric-label">Target Function:</span>
+        <span className="metric-value target-function">{winningFunction || 'Loading...'}</span>
+      </div>
+      <div className="metric">
         <span className="metric-label">Total Functions Hacked:</span>
         <span className="metric-value">{Math.max(totalFunctions - 1, 0)}</span>
       </div>
@@ -41,6 +47,11 @@ const Dashboard = ({ totalFunctions, currentSpeed, blockLength, money }: Dashboa
         <span className="metric-label">Complexity:</span>
         <span className="metric-value">{renderProgressBar(blockLength)}</span>
       </div>
+      {gameWon && (
+        <div className="victory-message">
+          🎉 MISSION ACCOMPLISHED! 🎉
+        </div>
+      )}
     </div>
   );
 };

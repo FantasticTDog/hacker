@@ -16,6 +16,8 @@ const App = () => {
     money,
     speedUpgradesBought,
     complexityUpgradesBought,
+    winningFunction,
+    gameWon,
     buySpeedUpgrade,
     buyComplexityUpgrade,
     handleClick,
@@ -29,6 +31,8 @@ const App = () => {
         currentSpeed={charsPerLine}
         blockLength={blockLength}
         money={money}
+        winningFunction={winningFunction}
+        gameWon={gameWon}
       />
       <div className="main-content">
         <div className="left-panel">

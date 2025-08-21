@@ -15,7 +15,7 @@ const FunctionList = ({ generatedFunctions }: FunctionListProps) => {
 
   return (
     <div className="function-list">
-      <h3>Generated Functions:</h3>
+      <h3>Hacked Functions:</h3>
       <div className="function-list-content" ref={listRef}>
         {generatedFunctions.map((funcName, index) => (
           <div key={index} className={`function-item ${index === generatedFunctions.length - 1 ? 'wip' : 'completed'}`}>

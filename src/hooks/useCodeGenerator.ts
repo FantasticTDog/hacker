@@ -22,8 +22,25 @@ export const useCodeGenerator = () => {
   const [money, setMoney] = useState(INITIAL_MONEY);
   const [speedUpgradesBought, setSpeedUpgradesBought] = useState(0);
   const [complexityUpgradesBought, setComplexityUpgradesBought] = useState(0);
+  const [winningFunction, setWinningFunction] = useState<string>('');
+  const [gameWon, setGameWon] = useState(false);
 
   const DISPLAY_FIELD_ID = 'hacker-display-field';
+
+  // Generate winning function on component mount
+  useEffect(() => {
+    const generateWinningFunction = () => {
+      const randomTopic = topics[Math.floor(Math.random() * topics.length)];
+      const randomTopicWord = randomTopic[Math.floor(Math.random() * randomTopic.length)];
+      const capitalizedTopicWord = randomTopicWord.charAt(0).toUpperCase() + randomTopicWord.slice(1);
+      const randomVerb = functionVerbs[Math.floor(Math.random() * functionVerbs.length)];
+      const randomNoun = functionNouns[Math.floor(Math.random() * functionNouns.length)];
+      const capitalizedNoun = randomNoun.charAt(0).toUpperCase() + randomNoun.slice(1);
+      return `${randomVerb}${capitalizedTopicWord}${capitalizedNoun}`;
+    };
+    
+    setWinningFunction(generateWinningFunction());
+  }, []);
 
   const buySpeedUpgrade = useCallback(() => {
     const nextUpgrade = upgradesSpeed[speedUpgradesBought];
@@ -109,9 +126,16 @@ export const useCodeGenerator = () => {
       setVisibleText(prev => prev + '\n');
       setIsTyping(false);
       // Increase money when a function is completed
-      setMoney(prev => prev + moneyPerFunction);
+      setMoney(prev => prev + 1);
+      
+      // Check win condition
+      const lastCompletedFunction = generatedFunctions[generatedFunctions.length - 1];
+      if (lastCompletedFunction === winningFunction && !gameWon) {
+        setGameWon(true);
+        alert(`🎉 HACKER VICTORY! You successfully hacked: ${winningFunction}! 🎉`);
+      }
     }
-  }, [currentBlockIndex, currentCodeBlock, charsPerLine]);
+  }, [currentBlockIndex, currentCodeBlock, charsPerLine, generatedFunctions, winningFunction, gameWon]);
 
   const handleKeyPress = useCallback((event: KeyboardEvent) => {
     if (event.key === '+' || event.key === '=') {
@@ -168,6 +192,8 @@ export const useCodeGenerator = () => {
     money,
     speedUpgradesBought,
     complexityUpgradesBought,
+    winningFunction,
+    gameWon,
     buySpeedUpgrade,
     buyComplexityUpgrade,
     handleClick,

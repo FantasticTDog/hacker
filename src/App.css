@@ -65,6 +65,31 @@ body {
   color: #ffffff;
 }
 
+.target-function {
+  color: #00ff00 !important;
+  font-family: 'Courier New', monospace;
+  font-size: 14px;
+  word-break: break-all;
+}
+
+.victory-message {
+  margin-top: 15px;
+  padding: 10px;
+  background-color: #00ff00;
+  color: #000;
+  text-align: center;
+  border-radius: 6px;
+  font-weight: bold;
+  font-size: 14px;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}
+
 .progress-bar {
   display: flex;
   gap: 2px;
