@@ -362,3 +362,121 @@ body {
   color: #b0b0b0;
   font-style: italic;
 }
+
+/* Initialization Sequence Styles */
+.init-sequence {
+  width: 100vw;
+  height: 100vh;
+  background-color: #000;
+  color: #00ff00;
+  font-family: 'Courier New', monospace;
+  display: flex;
+  flex-direction: column;
+  padding: 40px;
+  overflow: hidden;
+}
+
+.init-header {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.init-title {
+  display: block;
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 10px;
+  text-shadow: 0 0 10px #00ff00;
+}
+
+.init-subtitle {
+  display: block;
+  font-size: 14px;
+  color: #00cc00;
+}
+
+.init-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
+
+.init-progress {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.progress-text {
+  font-size: 16px;
+  color: #ffffff;
+}
+
+.init-progress .progress-bar {
+  display: flex;
+  gap: 4px;
+}
+
+.init-progress .progress-segment {
+  width: 12px;
+  height: 20px;
+  border-radius: 3px;
+  transition: all 0.3s ease;
+}
+
+.init-progress .progress-segment.loaded {
+  background-color: #00ff00;
+  box-shadow: 0 0 8px rgba(0, 255, 0, 0.6);
+}
+
+.init-progress .progress-segment.pending {
+  background-color: rgba(0, 255, 0, 0.2);
+  border: 1px solid rgba(0, 255, 0, 0.4);
+}
+
+.init-log {
+  flex: 1;
+  background-color: rgba(0, 0, 0, 0.8);
+  border: 2px solid #00ff00;
+  border-radius: 8px;
+  padding: 20px;
+  font-size: 14px;
+  line-height: 1.6;
+  overflow-y: auto;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  box-shadow: inset 0 0 20px rgba(0, 255, 0, 0.1);
+}
+
+.init-log:has(>> MISSION BRIEFING <<) {
+  animation: pulse-border 2s infinite;
+}
+
+@keyframes pulse-border {
+  0% { border-color: #00ff00; }
+  50% { border-color: #ffff00; }
+  100% { border-color: #00ff00; }
+}
+
+.init-log .cursor {
+  animation: blink 1s infinite;
+  color: #00ff00;
+}
+
+.init-footer {
+  text-align: center;
+  margin-top: 20px;
+}
+
+.footer-text {
+  font-size: 12px;
+  color: #00cc00;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% { opacity: 1; }
+  50% { opacity: 0.5; }
+  100% { opacity: 1; }
+}

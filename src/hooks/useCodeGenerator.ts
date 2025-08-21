@@ -16,7 +16,6 @@ export const useCodeGenerator = () => {
   const [isFocused, setIsFocused] = useState(false);
   const [isTyping, setIsTyping] = useState(false);
   const [charsPerLine, setCharsPerLine] = useState(INITIAL_SPEED);
-  const [currentTopicWords, setCurrentTopicWords] = useState<string[]>([]);
   const [generatedFunctions, setGeneratedFunctions] = useState<string[]>([]);
   const [blockLength, setBlockLength] = useState(INITIAL_COMPLEXITY);
   const [money, setMoney] = useState(INITIAL_MONEY);
@@ -24,6 +23,7 @@ export const useCodeGenerator = () => {
   const [complexityUpgradesBought, setComplexityUpgradesBought] = useState(0);
   const [winningFunction, setWinningFunction] = useState<string>('');
   const [gameWon, setGameWon] = useState(false);
+  const [isInitialized, setIsInitialized] = useState(false);
 
   const DISPLAY_FIELD_ID = 'hacker-display-field';
 
@@ -126,7 +126,7 @@ export const useCodeGenerator = () => {
       setVisibleText(prev => prev + '\n');
       setIsTyping(false);
       // Increase money when a function is completed
-      setMoney(prev => prev + 1);
+      setMoney(prev => prev + moneyPerFunction);
       
       // Check win condition
       const lastCompletedFunction = generatedFunctions[generatedFunctions.length - 1];
@@ -183,6 +183,10 @@ export const useCodeGenerator = () => {
     }
   }, [isFocused, handleKeyPress]);
 
+  const handleInitializationComplete = useCallback(() => {
+    setIsInitialized(true);
+  }, []);
+
   return {
     visibleText,
     isFocused,
@@ -194,8 +198,10 @@ export const useCodeGenerator = () => {
     complexityUpgradesBought,
     winningFunction,
     gameWon,
+    isInitialized,
     buySpeedUpgrade,
     buyComplexityUpgrade,
+    handleInitializationComplete,
     handleClick,
     handleBlur
   };

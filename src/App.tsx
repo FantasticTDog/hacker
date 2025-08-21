@@ -4,6 +4,7 @@ import Dashboard from './components/Dashboard';
 import FunctionList from './components/FunctionList';
 import CodeDisplay from './components/CodeDisplay';
 import Shop from './components/Shop';
+import InitializationSequence from './components/InitializationSequence';
 import { useCodeGenerator } from './hooks/useCodeGenerator';
 
 const App = () => {
@@ -18,11 +19,20 @@ const App = () => {
     complexityUpgradesBought,
     winningFunction,
     gameWon,
+    isInitialized,
     buySpeedUpgrade,
     buyComplexityUpgrade,
+    handleInitializationComplete,
     handleClick,
     handleBlur
   } = useCodeGenerator();
+
+  if (!isInitialized) {
+    return <InitializationSequence 
+      onComplete={handleInitializationComplete} 
+      targetFunction={winningFunction}
+    />;
+  }
 
   return (
     <div className="app">
