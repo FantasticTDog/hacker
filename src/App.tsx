@@ -138,31 +138,48 @@ const App = () => {
 
   return (
     <div className="app">
-      <div className="function-list">
-        <h3>Generated Functions:</h3>
-        {generatedFunctions.map((funcName, index) => (
-          <div key={index} className={`function-item ${index === generatedFunctions.length - 1 ? 'wip' : 'completed'}`}>
-            <span className="status-indicator">
-              {index === generatedFunctions.length - 1 ? '🔄' : '✅'}
-            </span>
-            <span className="function-name">{funcName}</span>
-          </div>
-        ))}
+      <div className="dashboard">
+        <h3>Hacker Performance Dashboard</h3>
+        <div className="metric">
+          <span className="metric-label">Total Functions Hacked:</span>
+          <span className="metric-value">{Math.max(generatedFunctions.length - 1, 0)}</span>
+        </div>
+        <div className="metric">
+          <span className="metric-label">Speed:</span>
+          <span className="metric-value">{'🔥'.repeat(Math.min(charsPerLine, 10))}</span>
+        </div>
+        <div className="metric">
+          <span className="metric-label">Complexity:</span>
+          <span className="metric-value">{'💀'.repeat(Math.min(maxBlockLength, 10))}</span>
+        </div>
       </div>
-      <div 
-        id={DISPLAY_FIELD_ID}
-        className={`hacker-display ${isFocused ? 'focused' : ''}`}
-        onClick={handleClick}
-        onBlur={handleBlur}
-        tabIndex={0}
-      >
-        {visibleText || 'Click here and start typing...'}
-        {isFocused && <span className="cursor">|</span>}
-        {isFocused && (
-          <div className="chars-per-line-indicator">
-            Chars per keystroke: {charsPerLine}
-          </div>
-        )}
+      <div className="main-content">
+        <div className="function-list">
+          <h3>Generated Functions:</h3>
+          {generatedFunctions.map((funcName, index) => (
+            <div key={index} className={`function-item ${index === generatedFunctions.length - 1 ? 'wip' : 'completed'}`}>
+              <span className="status-indicator">
+                {index === generatedFunctions.length - 1 ? '🔄' : '✅'}
+              </span>
+              <span className="function-name">{funcName}</span>
+            </div>
+          ))}
+        </div>
+        <div 
+          id={DISPLAY_FIELD_ID}
+          className={`hacker-display ${isFocused ? 'focused' : ''}`}
+          onClick={handleClick}
+          onBlur={handleBlur}
+          tabIndex={0}
+        >
+          {visibleText || 'Click here and start typing...'}
+          {isFocused && <span className="cursor">|</span>}
+          {isFocused && (
+            <div className="chars-per-line-indicator">
+              Chars per keystroke: {charsPerLine}
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );
