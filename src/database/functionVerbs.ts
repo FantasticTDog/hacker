@@ -18,7 +18,16 @@ const functionVerbs = [
   'configure',
   'execute',
   'handle',
-  'manage'
+  'manage',
+  'hackInto',
+  'break',
+  'fix',
+  'optimize',
+  'analyze',
+  'synchronize',
+  'encrypt',
+  'decode',
+  'duplicate',
 ];
 
 export default functionVerbs;

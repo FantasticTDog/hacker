@@ -3,6 +3,7 @@ import './App.css';
 import codeSnippets from './database/codeSnippets';
 import topics from './database/topics';
 import functionVerbs from './database/functionVerbs';
+import functionNouns from './database/functionNouns';
 
 const App = () => {
   const [visibleText, setVisibleText] = useState('');
@@ -10,8 +11,10 @@ const App = () => {
   const [currentBlockIndex, setCurrentBlockIndex] = useState(0);
   const [isFocused, setIsFocused] = useState(false);
   const [isTyping, setIsTyping] = useState(false);
-  const [charsPerLine, setCharsPerLine] = useState(5);
+  const [charsPerLine, setCharsPerLine] = useState(1);
+  const [maxBlockLength, setMaxBlockLength] = useState(3);
   const [currentTopicWords, setCurrentTopicWords] = useState<string[]>([]);
+  const [generatedFunctions, setGeneratedFunctions] = useState<string[]>([]);
 
   const DISPLAY_FIELD_ID = 'hacker-display-field';
 
@@ -30,13 +33,20 @@ const App = () => {
 
   const generateFunctionName = (topicWord: string) => {
     const capitalizedTopicWord = topicWord.charAt(0).toUpperCase() + topicWord.slice(1);
-    const functionName = `function ${functionVerbs[Math.floor(Math.random() * functionVerbs.length)]}${capitalizedTopicWord}() {`;
-    return functionName;
+    const randomNoun = functionNouns[Math.floor(Math.random() * functionNouns.length)];
+    const capitalizedNoun = randomNoun.charAt(0).toUpperCase() + randomNoun.slice(1);
+    const functionName = `${functionVerbs[Math.floor(Math.random() * functionVerbs.length)]}${capitalizedTopicWord}${capitalizedNoun}`;
+    const functionString = `\nfunction ${functionName}() {`;
+    
+    // Add to tracking array
+    setGeneratedFunctions(prev => [...prev, functionName]);
+    
+    return functionString;
   };
 
   const generateCodeBlock = () => {
     const topicWords = getRandomTopicWords();
-    const blockSize = Math.floor(Math.random() * 8) + 3; // 3-10 snippets
+    const blockSize = Math.floor(Math.random() * maxBlockLength) + 1;
     const codeBlock: string[] = [];
     
     for (let i = 0; i < blockSize; i++) {
@@ -128,6 +138,17 @@ const App = () => {
 
   return (
     <div className="app">
+      <div className="function-list">
+        <h3>Generated Functions:</h3>
+        {generatedFunctions.map((funcName, index) => (
+          <div key={index} className={`function-item ${index === generatedFunctions.length - 1 ? 'wip' : 'completed'}`}>
+            <span className="status-indicator">
+              {index === generatedFunctions.length - 1 ? '🔄' : '✅'}
+            </span>
+            <span className="function-name">{funcName}</span>
+          </div>
+        ))}
+      </div>
       <div 
         id={DISPLAY_FIELD_ID}
         className={`hacker-display ${isFocused ? 'focused' : ''}`}
