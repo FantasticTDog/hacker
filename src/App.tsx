@@ -75,6 +75,14 @@ const App = () => {
     }
   };
 
+  // Auto-scroll to bottom when visibleText changes
+  useEffect(() => {
+    const displayElement = document.getElementById(DISPLAY_FIELD_ID);
+    if (displayElement) {
+      displayElement.scrollTop = displayElement.scrollHeight;
+    }
+  }, [visibleText]);
+
   const handleKeyPress = (event) => {
     // Handle charsPerLine adjustment
     if (event.key === '+' || event.key === '=') {
