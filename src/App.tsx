@@ -2,14 +2,16 @@ import React, { useState, useEffect } from 'react';
 import './App.css';
 import codeSnippets from './database/codeSnippets';
 import topics from './database/topics';
+import functionVerbs from './database/functionVerbs';
 
 const App = () => {
   const [visibleText, setVisibleText] = useState('');
-  const [currentSnippet, setCurrentSnippet] = useState('');
-  const [currentSnippetIndex, setCurrentSnippetIndex] = useState(0);
+  const [currentCodeBlock, setCurrentCodeBlock] = useState<string>('');
+  const [currentBlockIndex, setCurrentBlockIndex] = useState(0);
   const [isFocused, setIsFocused] = useState(false);
   const [isTyping, setIsTyping] = useState(false);
-  const [charsPerLine, setCharsPerLine] = useState(1);
+  const [charsPerLine, setCharsPerLine] = useState(5);
+  const [currentTopicWords, setCurrentTopicWords] = useState<string[]>([]);
 
   const DISPLAY_FIELD_ID = 'hacker-display-field';
 
@@ -19,33 +21,55 @@ const App = () => {
     return shuffled.slice(0, 3); // Get 3 random words from the topic
   };
 
-  const generateRandomSnippet = () => {
+  const generateRandomSnippet = (topicWords: string[]) => {
     const randomSnippet = codeSnippets[Math.floor(Math.random() * codeSnippets.length)];
-    const topicWords = getRandomTopicWords();
     
-    // Call the snippet function with the topic words
     // Use apply to handle variable parameter counts
     return randomSnippet.apply(null, topicWords);
   };
 
+  const generateFunctionName = (topicWord: string) => {
+    const capitalizedTopicWord = topicWord.charAt(0).toUpperCase() + topicWord.slice(1);
+    const functionName = `function ${functionVerbs[Math.floor(Math.random() * functionVerbs.length)]}${capitalizedTopicWord}() {`;
+    return functionName;
+  };
+
+  const generateCodeBlock = () => {
+    const topicWords = getRandomTopicWords();
+    const blockSize = Math.floor(Math.random() * 8) + 3; // 3-10 snippets
+    const codeBlock: string[] = [];
+    
+    for (let i = 0; i < blockSize; i++) {
+      const snippet = generateRandomSnippet(topicWords);
+      codeBlock.push(snippet);
+    }
+    const functionName = generateFunctionName(topicWords[0]);
+    const codeBlockString = `${functionName}\n${codeBlock.join("\n")}\n}`;
+    return { topicWords, codeBlockString };
+  };
+
   const startNewSnippet = () => {
-    const newSnippet = generateRandomSnippet();
-    setCurrentSnippet(newSnippet);
-    setCurrentSnippetIndex(0);
+    // If we're starting fresh or finished the current block
+    if (currentCodeBlock.length === 0 || currentBlockIndex >= currentCodeBlock.length) {
+      const { topicWords, codeBlockString } = generateCodeBlock();
+      setCurrentTopicWords(topicWords);
+      setCurrentCodeBlock(codeBlockString);
+      setCurrentBlockIndex(0);
+    }
     setIsTyping(true);
   };
 
   const typeNextCharacter = () => {
-    if (currentSnippetIndex < currentSnippet.length) {
+    if (currentBlockIndex < currentCodeBlock.length) {
       // Add multiple characters based on charsPerLine
-      const remainingChars = currentSnippet.length - currentSnippetIndex;
+      const remainingChars = currentCodeBlock.length - currentBlockIndex;
       const charsToAdd = Math.min(charsPerLine, remainingChars);
-      const newChars = currentSnippet.substring(currentSnippetIndex, currentSnippetIndex + charsToAdd);
+      const newChars = currentCodeBlock.substring(currentBlockIndex, currentBlockIndex + charsToAdd);
       
       setVisibleText(prev => prev + newChars);
-      setCurrentSnippetIndex(prev => prev + charsToAdd);
+      setCurrentBlockIndex(prev => prev + charsToAdd);
     } else {
-      // Current snippet is complete, add newline and start new snippet
+      // Block is complete, add newline and stop typing
       setVisibleText(prev => prev + '\n');
       setIsTyping(false);
     }
@@ -92,7 +116,7 @@ const App = () => {
         document.removeEventListener('keydown', handleKeyPress);
       };
     }
-  }, [isFocused, isTyping, currentSnippetIndex]);
+  }, [isFocused, isTyping, currentBlockIndex]);
 
   return (
     <div className="app">
