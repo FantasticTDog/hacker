@@ -1,20 +1,31 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
+
 interface FunctionListProps {
   generatedFunctions: string[];
 }
 
 const FunctionList = ({ generatedFunctions }: FunctionListProps) => {
+  const listRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (listRef.current) {
+      listRef.current.scrollTop = listRef.current.scrollHeight;
+    }
+  }, [generatedFunctions]);
+
   return (
     <div className="function-list">
-      <h3>Completed Hacks:</h3>
-      {generatedFunctions.map((funcName, index) => (
-        <div key={index} className={`function-item ${index === generatedFunctions.length - 1 ? 'wip' : 'completed'}`}>
-          <span className="status-indicator">
-            {index === generatedFunctions.length - 1 ? '🔄' : '✅'}
-          </span>
-          <span className="function-name">{funcName}</span>
-        </div>
-      ))}
+      <h3>Generated Functions:</h3>
+      <div className="function-list-content" ref={listRef}>
+        {generatedFunctions.map((funcName, index) => (
+          <div key={index} className={`function-item ${index === generatedFunctions.length - 1 ? 'wip' : 'completed'}`}>
+            <span className="status-indicator">
+              {index === generatedFunctions.length - 1 ? '🔄' : '✅'}
+            </span>
+            <span className="function-name">{funcName}</span>
+          </div>
+        ))}
+      </div>
     </div>
   );
 };
