@@ -3,9 +3,11 @@ import codeSnippets from '../database/codeSnippets';
 import topics from '../database/topics';
 import functionVerbs from '../database/functionVerbs';
 import functionNouns from '../database/functionNouns';
+import { upgradesSpeed, upgradesComplexity } from '../database/upgrades';
 
-const INITIL_SPEED = 20;
+const INITIAL_SPEED = 1;
 const INITIAL_COMPLEXITY = 1;
+const INITIAL_MONEY = 0;
 
 export const useCodeGenerator = () => {
   const [visibleText, setVisibleText] = useState('');
@@ -13,16 +15,35 @@ export const useCodeGenerator = () => {
   const [currentBlockIndex, setCurrentBlockIndex] = useState(0);
   const [isFocused, setIsFocused] = useState(false);
   const [isTyping, setIsTyping] = useState(false);
-  const [charsPerLine, setCharsPerLine] = useState(INITIL_SPEED);
+  const [charsPerLine, setCharsPerLine] = useState(INITIAL_SPEED);
+  const [currentTopicWords, setCurrentTopicWords] = useState<string[]>([]);
   const [generatedFunctions, setGeneratedFunctions] = useState<string[]>([]);
-  const [maxBlockLength, setMaxBlockLength] = useState(INITIAL_COMPLEXITY);
-  const [money, setMoney] = useState(0);
+  const [blockLength, setBlockLength] = useState(INITIAL_COMPLEXITY);
+  const [money, setMoney] = useState(INITIAL_MONEY);
   const [speedUpgradesBought, setSpeedUpgradesBought] = useState(0);
   const [complexityUpgradesBought, setComplexityUpgradesBought] = useState(0);
 
   const DISPLAY_FIELD_ID = 'hacker-display-field';
 
-  const moneyPerFunction = Math.round(maxBlockLength * 1.2 * 10) / 10;
+  const buySpeedUpgrade = useCallback(() => {
+    const nextUpgrade = upgradesSpeed[speedUpgradesBought];
+    if (nextUpgrade && money >= nextUpgrade.cost) {
+      setMoney(prev => prev - nextUpgrade.cost);
+      setSpeedUpgradesBought(prev => prev + 1);
+      setCharsPerLine(prev => prev + nextUpgrade.increaseBy);
+    }
+  }, [speedUpgradesBought, money]);
+
+  const buyComplexityUpgrade = useCallback(() => {
+    const nextUpgrade = upgradesComplexity[complexityUpgradesBought];
+    if (nextUpgrade && money >= nextUpgrade.cost) {
+      setMoney(prev => prev - nextUpgrade.cost);
+      setComplexityUpgradesBought(prev => prev + 1);
+      setBlockLength(prev => prev + nextUpgrade.increaseBy);
+    }
+  }, [complexityUpgradesBought, money]);
+
+  const moneyPerFunction = Math.round(blockLength * 1.2 * 10) / 10;
 
   const getRandomTopicWords = () => {
     const randomTopic = topics[Math.floor(Math.random() * topics.length)];
@@ -49,14 +70,13 @@ export const useCodeGenerator = () => {
 
   const generateCodeBlock = () => {
     const topicWords = getRandomTopicWords();
-    const blockSize = Math.floor(Math.random() * maxBlockLength) + 1; // 1 to maxBlockLength
     const codeBlock: string[] = [];
     
     // Generate a function name and add it to the block
     const functionName = generateFunctionName(topicWords[0]);
     codeBlock.push(functionName);
     
-    for (let i = 0; i < blockSize; i++) {
+    for (let i = 0; i < blockLength; i++) {
       const snippet = generateRandomSnippet(topicWords);
       codeBlock.push(snippet);
     }
@@ -144,10 +164,12 @@ export const useCodeGenerator = () => {
     isFocused,
     charsPerLine,
     generatedFunctions,
-    maxBlockLength,
+    blockLength,
     money,
     speedUpgradesBought,
     complexityUpgradesBought,
+    buySpeedUpgrade,
+    buyComplexityUpgrade,
     handleClick,
     handleBlur
   };

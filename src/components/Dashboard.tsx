@@ -3,11 +3,11 @@ import React from 'react';
 interface DashboardProps {
   totalFunctions: number;
   currentSpeed: number;
-  maxBlockLength: number;
+  blockLength: number;
   money: number;
 }
 
-const Dashboard = ({ totalFunctions, currentSpeed, maxBlockLength, money }: DashboardProps) => {
+const Dashboard = ({ totalFunctions, currentSpeed, blockLength, money }: DashboardProps) => {
   const renderProgressBar = (value: number, maxValue: number = 20) => {
     const segments = Math.min(value, maxValue);
     return (
@@ -39,7 +39,7 @@ const Dashboard = ({ totalFunctions, currentSpeed, maxBlockLength, money }: Dash
       </div>
       <div className="metric">
         <span className="metric-label">Complexity:</span>
-        <span className="metric-value">{renderProgressBar(maxBlockLength)}</span>
+        <span className="metric-value">{renderProgressBar(blockLength)}</span>
       </div>
     </div>
   );

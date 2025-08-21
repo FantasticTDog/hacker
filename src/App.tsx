@@ -12,10 +12,12 @@ const App = () => {
     isFocused,
     charsPerLine,
     generatedFunctions,
-    maxBlockLength,
+    blockLength,
     money,
     speedUpgradesBought,
     complexityUpgradesBought,
+    buySpeedUpgrade,
+    buyComplexityUpgrade,
     handleClick,
     handleBlur
   } = useCodeGenerator();
@@ -25,7 +27,7 @@ const App = () => {
       <Dashboard 
         totalFunctions={generatedFunctions.length}
         currentSpeed={charsPerLine}
-        maxBlockLength={maxBlockLength}
+        blockLength={blockLength}
         money={money}
       />
       <div className="main-content">
@@ -35,6 +37,8 @@ const App = () => {
             speedUpgradesBought={speedUpgradesBought}
             complexityUpgradesBought={complexityUpgradesBought}
             money={money}
+            onBuySpeedUpgrade={buySpeedUpgrade}
+            onBuyComplexityUpgrade={buyComplexityUpgrade}
           />
         </div>
         <CodeDisplay 
