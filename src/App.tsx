@@ -12,6 +12,7 @@ const App = () => {
     charsPerLine,
     generatedFunctions,
     maxBlockLength,
+    money,
     handleClick,
     handleBlur
   } = useCodeGenerator();
@@ -22,6 +23,7 @@ const App = () => {
         totalFunctions={generatedFunctions.length}
         currentSpeed={charsPerLine}
         maxBlockLength={maxBlockLength}
+        money={money}
       />
       <div className="main-content">
         <FunctionList generatedFunctions={generatedFunctions} />

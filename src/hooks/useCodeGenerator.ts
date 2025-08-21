@@ -5,7 +5,7 @@ import functionVerbs from '../database/functionVerbs';
 import functionNouns from '../database/functionNouns';
 
 const INITIL_SPEED = 1;
-const INITIAL_COMPLEXITY = 3;
+const INITIAL_COMPLEXITY = 1;
 
 export const useCodeGenerator = () => {
   const [visibleText, setVisibleText] = useState('');
@@ -14,11 +14,13 @@ export const useCodeGenerator = () => {
   const [isFocused, setIsFocused] = useState(false);
   const [isTyping, setIsTyping] = useState(false);
   const [charsPerLine, setCharsPerLine] = useState(INITIL_SPEED);
-  const [currentTopicWords, setCurrentTopicWords] = useState<string[]>([]);
   const [generatedFunctions, setGeneratedFunctions] = useState<string[]>([]);
   const [maxBlockLength, setMaxBlockLength] = useState(INITIAL_COMPLEXITY);
+  const [money, setMoney] = useState(0);
 
   const DISPLAY_FIELD_ID = 'hacker-display-field';
+
+  const moneyPerFunction = Math.round(maxBlockLength * 1.2 * 10) / 10;
 
   const getRandomTopicWords = () => {
     const randomTopic = topics[Math.floor(Math.random() * topics.length)];
@@ -61,13 +63,12 @@ export const useCodeGenerator = () => {
     codeBlock.push('}');
     
     const codeBlockString = codeBlock.join("\n");
-    return { topicWords, codeBlockString };
+    return codeBlockString
   };
 
   const startNewSnippet = useCallback(() => {
     if (currentCodeBlock.length === 0 || currentBlockIndex >= currentCodeBlock.length) {
-      const { topicWords, codeBlockString } = generateCodeBlock();
-      setCurrentTopicWords(topicWords);
+      const codeBlockString = generateCodeBlock();
       setCurrentCodeBlock(codeBlockString);
       setCurrentBlockIndex(0);
     }
@@ -85,6 +86,8 @@ export const useCodeGenerator = () => {
     } else {
       setVisibleText(prev => prev + '\n');
       setIsTyping(false);
+      // Increase money when a function is completed
+      setMoney(prev => prev + moneyPerFunction);
     }
   }, [currentBlockIndex, currentCodeBlock, charsPerLine]);
 
@@ -140,6 +143,7 @@ export const useCodeGenerator = () => {
     charsPerLine,
     generatedFunctions,
     maxBlockLength,
+    money,
     handleClick,
     handleBlur
   };

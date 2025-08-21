@@ -1,3 +1,4 @@
+import React from 'react';
 interface CodeDisplayProps {
   visibleText: string;
   isFocused: boolean;
@@ -17,11 +18,6 @@ const CodeDisplay = ({ visibleText, isFocused, charsPerLine, onFocus, onBlur }: 
     >
       {visibleText || 'Click here and start typing...'}
       {isFocused && <span className="cursor">|</span>}
-      {isFocused && (
-        <div className="chars-per-line-indicator">
-          Chars per keystroke: {charsPerLine}
-        </div>
-      )}
     </div>
   );
 };

@@ -8,7 +8,7 @@ const codeSnippets = [
   () => `// initialise secret easter egg code`,
   (a) => `// TODO: implement ${a} function`,
   () => `/* This is a multi-line comment */`,
-  (a) => `// FIXME: ${a} needs refactoring`,
+  (a) => `// FIXME: ${a}-function needs refactoring`,
   
   // Loops
   (a, b) => `for (let ${a} = ${b}; ${a} < ${a} + 10; ${a}++) {

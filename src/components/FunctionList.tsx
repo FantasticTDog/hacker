@@ -1,3 +1,4 @@
+import React from 'react';
 interface FunctionListProps {
   generatedFunctions: string[];
 }
@@ -5,7 +6,7 @@ interface FunctionListProps {
 const FunctionList = ({ generatedFunctions }: FunctionListProps) => {
   return (
     <div className="function-list">
-      <h3>Generated Functions:</h3>
+      <h3>Completed Hacks:</h3>
       {generatedFunctions.map((funcName, index) => (
         <div key={index} className={`function-item ${index === generatedFunctions.length - 1 ? 'wip' : 'completed'}`}>
           <span className="status-indicator">
