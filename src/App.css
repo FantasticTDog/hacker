@@ -85,3 +85,16 @@ body {
 .hacker-display::-webkit-scrollbar-thumb:hover {
   background: #00cc00;
 }
+
+.chars-per-line-indicator {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  background: rgba(0, 0, 0, 0.8);
+  color: #00ff00;
+  padding: 5px 10px;
+  border-radius: 4px;
+  font-size: 12px;
+  border: 1px solid #00ff00;
+  font-family: 'Courier New', monospace;
+}
