@@ -48,7 +48,10 @@ export const useCodeGenerator = () => {
       currentCodeBlock.length === 0 ||
       currentBlockIndex >= currentCodeBlock.length
     ) {
-      const { codeBlockString, functionName } = generateCodeBlock(visibleText, blockLength);
+      const { codeBlockString, functionName } = generateCodeBlock(
+        visibleText,
+        blockLength
+      );
       setCurrentCodeBlock(codeBlockString);
       resetBlockIndex();
       addGeneratedFunction(functionName);
@@ -66,6 +69,10 @@ export const useCodeGenerator = () => {
     addGeneratedFunction,
     addToVisibleText,
     incrementBlockIndex,
+    visibleText,
+    blockLength,
+    resetBlockIndex,
+    setCurrentCodeBlock,
   ]);
 
   const typeNextCharacter = useCallback(() => {

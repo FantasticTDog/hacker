@@ -7,7 +7,7 @@ interface CodeDisplayProps {
   onBlur: () => void;
 }
 
-const CodeDisplay = ({ visibleText, isFocused, charsPerLine, onFocus, onBlur }: CodeDisplayProps) => {
+const CodeDisplay = ({ visibleText, isFocused, onFocus, onBlur }: CodeDisplayProps) => {
   return (
     <div 
       id="hacker-display-field"

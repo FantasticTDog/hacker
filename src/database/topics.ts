@@ -33,7 +33,6 @@ const topics = [
   ['tundra', 'ice', 'wolf', 'aurora', 'cold'],
   ['savanna', 'lion', 'grass', 'gazelle', 'sun'],
   ['rainforest', 'parrot', 'vine', 'waterfall', 'humidity'],
-  // 10 more fun topic collections
   ['ninja', 'shuriken', 'katana', 'stealth', 'shadow'],
   ['pirate', 'treasure', 'ship', 'parrot', 'gold'],
   ['superhero', 'cape', 'mask', 'powers', 'villain'],

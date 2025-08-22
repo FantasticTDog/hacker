@@ -155,7 +155,7 @@ const codeSnippets = [
   
   // Module imports/exports
   (a, b) => `import { ${a} } from '${b}'`,
-  (a, b) => `export default ${a}`,
+  (a) => `export default ${a}`,
   (a, b) => `export const ${a} = ${b}`,
   
   // Debugging

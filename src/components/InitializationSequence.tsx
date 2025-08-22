@@ -78,7 +78,7 @@ const InitializationSequence = ({ onComplete, targetFunction }: InitializationSe
 
   useEffect(() => {
     if (!isTyping && showMission) {
-      const handleContinue = (e: KeyboardEvent | MouseEvent) => {
+      const handleContinue = () => {
         // Prevent multiple triggers
         if (typeof onComplete === 'function') {
           onComplete();
