@@ -5,13 +5,13 @@ const topics = {
     ['pizza', 'cheese', 'pepperoni', 'dough', 'sauce'],
     ['kitchen', 'spoon', 'pot', 'chef', 'recipe'],
     ['farm', 'cow', 'tractor', 'hay', 'barn'],
+  ],
+  1: [
     ['garden', 'flower', 'butterfly', 'soil', 'seed'],
     ['bakery', 'bread', 'flour', 'oven', 'cookie'],
     ['zoo', 'animal', 'cage', 'keeper', 'visitor'],
     ['school', 'pencil', 'book', 'teacher', 'homework'],
     ['party', 'streamer', 'cake', 'music', 'dance'],
-  ],
-  1: [
     ['beach', 'sand', 'wave', 'shell', 'surfboard'],
     ['forest', 'mushroom', 'fairy', 'oak', 'path'],
     ['library', 'novel', 'page', 'librarian', 'shelf'],
@@ -34,8 +34,6 @@ const topics = {
     ['lighthouse', 'light', 'coast', 'ship', 'tower'],
     ['observatory', 'telescope', 'star', 'galaxy', 'night'],
     ['desert', 'cactus', 'dune', 'camel', 'oasis'],
-  ],
-  3: [
     ['tundra', 'frost', 'wolf', 'aurora', 'cold'],
     ['savanna', 'lion', 'grass', 'gazelle', 'sun'],
     ['rainforest', 'macaw', 'vine', 'waterfall', 'humidity'],
@@ -46,8 +44,6 @@ const topics = {
     ['astronaut', 'spacesuit', 'moon', 'gravity', 'orbit'],
     ['cowboy', 'horse', 'saddle', 'ranch', 'lasso'],
     ['viking', 'axe', 'helmet', 'longship', 'mead'],
-  ],
-  4: [
     ['volcano', 'lava', 'fire', 'mountain', 'eruption'],
     ['samurai', 'armor', 'bushido', 'honor', 'katana'],
     ['knight', 'shield', 'fortress', 'quest', 'dragon'],
@@ -57,7 +53,14 @@ const topics = {
     ['wizard', 'spellbook', 'staff', 'enchantment', 'gem'],
     ['nuclear', 'reactor', 'radiation', 'core', 'meltdown', 'containment'],
     ['crimescene', 'evidence', 'detective', 'suspect', 'fingerprint', 'alibi'],
-    ['naturalDisasters', 'earthquake', 'tsunami', 'hurricane', 'flood', 'wildfire'],
+    [
+      'naturalDisasters',
+      'earthquake',
+      'tsunami',
+      'hurricane',
+      'flood',
+      'wildfire',
+    ],
   ],
 };
 
