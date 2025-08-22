@@ -7,9 +7,13 @@ interface DashboardProps {
   money: number;
   winningFunction: string;
   gameWon: boolean;
-}
+  probability: {
+    percentage: number;
+    totalCombinations: number;
+  };
+  }
 
-const Dashboard = ({ totalFunctions, currentSpeed, blockLength, money, winningFunction, gameWon }: DashboardProps) => {
+const Dashboard = ({ totalFunctions, currentSpeed, blockLength, money, winningFunction, gameWon, probability }: DashboardProps) => {
   const renderProgressBar = (value: number, maxValue: number = 20) => {
     const segments = Math.min(value, maxValue);
     return (
@@ -30,6 +34,7 @@ const Dashboard = ({ totalFunctions, currentSpeed, blockLength, money, winningFu
       <div className="metric">
         <span className="metric-label">Target Function:</span>
         <span className="metric-value target-function">{winningFunction || 'Loading...'}</span>
+        <span className="metric-value probability">{probability.percentage}% (1 / {probability.totalCombinations})</span>
       </div>
       <div className="metric">
         <span className="metric-label">Total Functions Hacked:</span>

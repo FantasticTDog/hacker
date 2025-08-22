@@ -9,6 +9,7 @@ const codeSnippets = [
   (a) => `// TODO: implement ${a} function`,
   () => `/* This is a multi-line comment */`,
   (a) => `// FIXME: ${a}-function needs refactoring`,
+  (a) => `// TODO: Make this work so we can run ${a}`,
   
   // Loops
   (a, b) => `for (let ${a} = ${b}; ${a} < ${a} + 10; ${a}++) {
@@ -163,7 +164,7 @@ const codeSnippets = [
   (a) => `console.table(${a})`,
   
   // Error handling
-  (a, b) => `throw new Error('${a}: ${b}')`,
+  (a, b) => `throw new Error('${a}: ${b} hasn't been implemented yet')`,
   (a) => `if (!${a}) throw new TypeError('${a} is required')`,
   
   // Utility functions

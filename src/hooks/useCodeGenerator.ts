@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef, useMemo } from 'react';
 import codeSnippets from '../database/codeSnippets';
 import topics from '../database/topics';
 import functionVerbs from '../database/functionVerbs';
@@ -8,6 +8,27 @@ import { upgradesSpeed, upgradesComplexity } from '../database/upgrades';
 const INITIAL_SPEED = 1;
 const INITIAL_COMPLEXITY = 1;
 const INITIAL_MONEY = 0;
+
+const getProbability = () => {
+  const verbCount = functionVerbs.length;
+  console.log('verbCount', verbCount)
+  const nounCount = functionNouns.length;
+  console.log('nounCount', nounCount)
+  const topicCount = topics.flatMap(arr => arr).length;
+  console.log('topicCount', topicCount)
+  const totalCombinations = verbCount * nounCount * topicCount;
+  const probability = 1 / totalCombinations;
+  const percentage = Number((probability * 100).toFixed(8));
+
+  return {
+    percentage,
+    totalCombinations,
+  }
+}
+
+const getMoneyPerFunction = (blockLength: number) => {
+  return Math.round(Math.pow(2, blockLength - 1) * 10) / 10;
+}
 
 export const useCodeGenerator = () => {
   const [visibleText, setVisibleText] = useState('');
@@ -26,6 +47,9 @@ export const useCodeGenerator = () => {
   const [isInitialized, setIsInitialized] = useState(false);
 
   const DISPLAY_FIELD_ID = 'hacker-display-field';
+
+  // Calculate probability only once
+  const probability = useMemo(() => getProbability(), []);
 
   // Generate winning function on component mount
   useEffect(() => {
@@ -60,7 +84,7 @@ export const useCodeGenerator = () => {
     }
   }, [complexityUpgradesBought, money]);
 
-  const moneyPerFunction = Math.round(blockLength * 1.2 * 10) / 10;
+  const moneyPerFunction = getMoneyPerFunction(blockLength);
 
   const getRandomTopicWords = () => {
     const randomTopic = topics[Math.floor(Math.random() * topics.length)];
@@ -203,6 +227,7 @@ export const useCodeGenerator = () => {
     buyComplexityUpgrade,
     handleInitializationComplete,
     handleClick,
-    handleBlur
+    handleBlur,
+    probability,
   };
 };

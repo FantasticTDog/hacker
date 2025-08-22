@@ -24,7 +24,8 @@ const App = () => {
     buyComplexityUpgrade,
     handleInitializationComplete,
     handleClick,
-    handleBlur
+    handleBlur,
+    probability,
   } = useCodeGenerator();
 
   if (!isInitialized) {
@@ -43,6 +44,7 @@ const App = () => {
         money={money}
         winningFunction={winningFunction}
         gameWon={gameWon}
+        probability={probability}
       />
       <div className="main-content">
         <div className="left-panel">
