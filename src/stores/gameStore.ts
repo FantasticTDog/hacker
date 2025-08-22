@@ -52,6 +52,11 @@ interface GameState {
   addGeneratedFunction: (functionName: string) => void;
   resetBlockIndex: () => void;
   setMoney: (amount: number) => void;
+  
+  // Array reduction actions
+  removeVerb: () => void;
+  removeNoun: () => void;
+  removeTopic: () => void;
 }
 
 const getMoneyPerFunction = (blockLength: number) => {
@@ -139,6 +144,49 @@ export const useGameStore = create<GameState>()(
       resetBlockIndex: () => set({ currentBlockIndex: 0 }),
       
       setMoney: (amount: number) => set({ money: amount }),
+      
+      // Array reduction actions
+      removeVerb: () => {
+        const { winningFunctionParts, functionVerbs } = get();
+        // Filter out the winning verb
+        const availableVerbs = functionVerbs.filter(v => v !== winningFunctionParts.verb);
+        if (availableVerbs.length > 0) {
+          // Remove a random verb from the available ones
+          const randomIndex = Math.floor(Math.random() * availableVerbs.length);
+          const verbToRemove = availableVerbs[randomIndex];
+          set((state) => ({
+            functionVerbs: state.functionVerbs.filter(v => v !== verbToRemove)
+          }));
+        }
+      },
+      
+      removeNoun: () => {
+        const { winningFunctionParts, functionNouns } = get();
+        // Filter out the winning noun
+        const availableNouns = functionNouns.filter(n => n !== winningFunctionParts.noun);
+        if (availableNouns.length > 0) {
+          // Remove a random noun from the available ones
+          const randomIndex = Math.floor(Math.random() * availableNouns.length);
+          const nounToRemove = availableNouns[randomIndex];
+          set((state) => ({
+            functionNouns: state.functionNouns.filter(n => n !== nounToRemove)
+          }));
+        }
+      },
+
+      removeTopic: () => {
+        const { winningFunctionParts, topics } = get();
+        // Filter out the winning topic
+        const availableTopics = topics.filter(t => !t.includes(winningFunctionParts.topic));
+        if (availableTopics.length > 0) {
+          // Remove a random topic from the available ones
+          const randomIndex = Math.floor(Math.random() * availableTopics.length);
+          const topicToRemove = availableTopics[randomIndex];
+          set((state) => ({
+            topics: state.topics.filter(t => t !== topicToRemove)
+          }));
+        }
+      },
   
   resetGame: () => {
     const winningParts = getRandomFunctionName(functionVerbs, functionNouns, topics);
