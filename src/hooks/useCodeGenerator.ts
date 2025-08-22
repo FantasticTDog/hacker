@@ -33,6 +33,7 @@ export const useCodeGenerator = () => {
     functionVerbs,
     functionNouns,
     topics,
+    topicsLevel,
     completeFunction,
     buySpeedUpgrade,
     buyComplexityUpgrade,

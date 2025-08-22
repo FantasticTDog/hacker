@@ -37,6 +37,7 @@ interface GameState {
   functionVerbs: string[];
   functionNouns: string[];
   topics: string[][];
+  topicsLevel: number;
   
   // Actions
   completeFunction: (functionName: string) => void;
@@ -82,7 +83,8 @@ export const useGameStore = create<GameState>()(
       winningFunctionParts: { verb: '', topic: '', noun: '' },
       functionVerbs: functionVerbs,
       functionNouns: functionNouns,
-      topics: topics,
+      topics: topics[0],
+      topicsLevel: 0,
 
       // Actions
       completeFunction: (functionName: string) => {
@@ -179,20 +181,22 @@ export const useGameStore = create<GameState>()(
       removeTopic: () => {
         const { winningFunctionParts, topics } = get();
         // Filter out the winning topic
-        const availableTopics = topics.filter(t => !t.includes(winningFunctionParts.topic));
+        const availableTopics = topics.filter(topicArray => 
+          !topicArray.includes(winningFunctionParts.topic)
+        );
         console.log('remaining Topics:', availableTopics.length - 1)
         if (availableTopics.length > 0) {
-          // Remove a random topic from the available ones
+          // Remove a random topic array from the available ones
           const randomIndex = Math.floor(Math.random() * availableTopics.length);
-          const topicToRemove = availableTopics[randomIndex];
+          const topicArrayToRemove = availableTopics[randomIndex];
           set((state) => ({
-            topics: state.topics.filter(t => t !== topicToRemove)
+            topics: state.topics.filter(t => t !== topicArrayToRemove)
           }));
         }
       },
   
   resetGame: () => {
-    const winningParts = getRandomFunctionName(functionVerbs, functionNouns, topics);
+    const winningParts = getRandomFunctionName(functionVerbs, functionNouns, topics[0]);
     set({
       money: 0,
       gameWon: false,
@@ -210,7 +214,8 @@ export const useGameStore = create<GameState>()(
       winningFunctionParts: winningParts,
       functionVerbs: functionVerbs,
       functionNouns: functionNouns,
-      topics: topics,
+      topics: topics[0], // Only store level 0 topics
+      topicsLevel: 0,
     });
   },
     }),
