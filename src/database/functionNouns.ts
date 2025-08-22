@@ -14,7 +14,6 @@ const functionNouns = [
   "module",
   "library",
   "framework",
-  "library",
   "interface",
   "component",
   "service",
@@ -34,7 +33,22 @@ const functionNouns = [
   "session",
   "token",
   "config",
-  "registry"
+  "registry",
+  "endpoint",
+  "gateway",
+  "middleware",
+  "adapter",
+  "connector",
+  "dispatcher",
+  "executor",
+  "resolver",
+  "mapper",
+  "transformer",
+  "converter",
+  "extractor",
+  "injector",
+  "decorator",
+  "wrapper"
 ];
 
 export default functionNouns;
