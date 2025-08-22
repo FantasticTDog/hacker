@@ -28,7 +28,7 @@ const generateCodeBlock = (visibleText: string, blockLength: number) => {
   codeBlock.push('}');
 
   const codeBlockString = codeBlock.join('\n');
-  return { codeBlockString, functionName };
+  return { codeBlockString, functionName, functionParts };
 };
 
 export default generateCodeBlock;

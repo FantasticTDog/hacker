@@ -1,13 +1,14 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useGameStore } from '../stores/gameStore';
 import { useProbability } from './useProbability';
-import getRandomFunctionName from '../utils/getRandomFunctionName';
+import getRandomFunctionName, { FunctionNameParts } from '../utils/getRandomFunctionName';
 import generateCodeBlock from '../utils/generateCodeBlock';
 import formatFunctionName from '../utils/formatFunctionName';
 
 export const useCodeGenerator = () => {
   const [isFocused, setIsFocused] = useState(false);
   const [isTyping, setIsTyping] = useState(false);
+  const [currentFunctionParts, setCurrentFunctionParts] = useState<FunctionNameParts | null>(null);
 
   const DISPLAY_FIELD_ID = 'hacker-display-field';
 
@@ -25,6 +26,7 @@ export const useCodeGenerator = () => {
     currentBlockIndex,
     generatedFunctions,
     winningFunction,
+    winningFunctionParts,
     completeFunction,
     buySpeedUpgrade,
     buyComplexityUpgrade,
@@ -33,28 +35,54 @@ export const useCodeGenerator = () => {
     setCurrentCodeBlock,
     incrementBlockIndex,
     setWinningFunction,
+    setWinningFunctionParts,
     addGeneratedFunction,
     resetBlockIndex,
   } = useGameStore();
 
   const probability = useProbability();
 
+  const compareFunctionParts = useCallback((completedParts: FunctionNameParts) => {
+    if (!winningFunctionParts) return;
+    
+    const matches: string[] = [];
+    
+    if (completedParts.verb === winningFunctionParts.verb) {
+      matches.push(`Verb: "${completedParts.verb}"`);
+    }
+    
+    if (completedParts.topic === winningFunctionParts.topic) {
+      matches.push(`Topic: "${completedParts.topic}"`);
+    }
+    
+    if (completedParts.noun === winningFunctionParts.noun) {
+      matches.push(`Noun: "${completedParts.noun}"`);
+    }
+    
+    if (matches.length > 0) {
+      console.log(`🎯 Partial match found: ${matches.join(', ')}`);
+    }
+  }, [winningFunctionParts]);
+
   useEffect(() => {
-    setWinningFunction(formatFunctionName(getRandomFunctionName()));
-  }, [setWinningFunction]);
+    const winningParts = getRandomFunctionName();
+    setWinningFunction(formatFunctionName(winningParts));
+    setWinningFunctionParts(winningParts);
+  }, [setWinningFunction, setWinningFunctionParts]);
 
   const startNewSnippet = useCallback(() => {
     if (
       currentCodeBlock.length === 0 ||
       currentBlockIndex >= currentCodeBlock.length
     ) {
-      const { codeBlockString, functionName } = generateCodeBlock(
+      const { codeBlockString, functionName, functionParts } = generateCodeBlock(
         visibleText,
         blockLength
       );
       setCurrentCodeBlock(codeBlockString);
       resetBlockIndex();
       addGeneratedFunction(functionName);
+      setCurrentFunctionParts(functionParts);
 
       const charsToAdd = Math.min(charsPerLine, codeBlockString.length);
       const newChars = codeBlockString.substring(0, charsToAdd);
@@ -95,6 +123,11 @@ export const useCodeGenerator = () => {
         const lastFunction = generatedFunctions[generatedFunctions.length - 1];
         completeFunction(lastFunction);
 
+        // Compare function parts with winning function
+        if (currentFunctionParts) {
+          compareFunctionParts(currentFunctionParts);
+        }
+
         // Check win condition
         if (lastFunction === winningFunction && !gameWon) {
           alert(
@@ -113,6 +146,8 @@ export const useCodeGenerator = () => {
     addToVisibleText,
     incrementBlockIndex,
     completeFunction,
+    currentFunctionParts,
+    compareFunctionParts,
   ]);
 
   const handleKeyPress = useCallback(

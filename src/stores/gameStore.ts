@@ -1,10 +1,12 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { upgradesSpeed, upgradesComplexity } from '../database/upgrades';
-import getRandomFunctionName from '../utils/getRandomFunctionName';
+import getRandomFunctionName, { FunctionNameParts } from '../utils/getRandomFunctionName';
 import formatFunctionName from '../utils/formatFunctionName';
 
 const INITIALIZED = true
+const INITIAL_SPEED = 20
+const INITIAL_COMPLEXITY = 1
 
 interface GameState {
   // Core game state
@@ -26,6 +28,7 @@ interface GameState {
   
   // Target function
   winningFunction: string;
+  winningFunctionParts: FunctionNameParts;
   
   // Actions
   completeFunction: (functionName: string) => void;
@@ -37,6 +40,7 @@ interface GameState {
   setCurrentCodeBlock: (block: string) => void;
   incrementBlockIndex: (amount: number) => void;
   setWinningFunction: (functionName: string) => void;
+  setWinningFunctionParts: (parts: FunctionNameParts) => void;
   addGeneratedFunction: (functionName: string) => void;
   resetBlockIndex: () => void;
   setMoney: (amount: number) => void;
@@ -55,13 +59,14 @@ export const useGameStore = create<GameState>()(
       isInitialized: INITIALIZED,
       speedUpgradesBought: 0,
       complexityUpgradesBought: 0,
-      charsPerLine: 1,
-      blockLength: 1,
+      charsPerLine: INITIAL_SPEED,
+      blockLength: INITIAL_COMPLEXITY,
       visibleText: '',
       currentCodeBlock: '',
       currentBlockIndex: 0,
       generatedFunctions: [],
       winningFunction: '',
+      winningFunctionParts: { verb: '', topic: '', noun: '' },
 
       // Actions
       completeFunction: (functionName: string) => {
@@ -114,6 +119,7 @@ export const useGameStore = create<GameState>()(
       })),
       
       setWinningFunction: (functionName: string) => set({ winningFunction: functionName }),
+      setWinningFunctionParts: (parts: FunctionNameParts) => set({ winningFunctionParts: parts }),
       
       addGeneratedFunction: (functionName: string) => set((state) => ({
         generatedFunctions: [...state.generatedFunctions, functionName]
@@ -124,19 +130,22 @@ export const useGameStore = create<GameState>()(
       setMoney: (amount: number) => set({ money: amount }),
   
   resetGame: () => {
+    const winningParts = getRandomFunctionName();
     set({
       money: 0,
       gameWon: false,
+      // keep this for debugging. Don't want to see the initialization sequence
       isInitialized: INITIALIZED,
       speedUpgradesBought: 0,
       complexityUpgradesBought: 0,
-      charsPerLine: 1,
-      blockLength: 1,
+      charsPerLine: INITIAL_SPEED,
+      blockLength: INITIAL_COMPLEXITY,
       visibleText: '',
       currentCodeBlock: '',
       currentBlockIndex: 0,
       generatedFunctions: [],
-      winningFunction: formatFunctionName(getRandomFunctionName()),
+      winningFunction: formatFunctionName(winningParts),
+      winningFunctionParts: winningParts,
     });
   },
     }),
