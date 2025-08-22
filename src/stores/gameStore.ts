@@ -10,6 +10,8 @@ import topics from '../database/topics';
 const INITIALIZED = true
 const INITIAL_SPEED = 20
 const INITIAL_COMPLEXITY = 1
+const MAX_FUNCTIONS_HISTORY = 250
+const MAX_TEXT_LENGTH = 10000
 
 interface GameState {
   // Core game state
@@ -28,6 +30,7 @@ interface GameState {
   currentCodeBlock: string;
   currentBlockIndex: number;
   generatedFunctions: Array<{ functionName: string; isPartialMatch: boolean }>;
+  totalFunctionsHacked: number;
   
   // Target function
   winningFunction: string;
@@ -79,6 +82,7 @@ export const useGameStore = create<GameState>()(
       currentCodeBlock: '',
       currentBlockIndex: 0,
       generatedFunctions: [],
+      totalFunctionsHacked: 0,
       winningFunction: '',
       winningFunctionParts: { verb: '', topic: '', noun: '' },
       functionVerbs: functionVerbs,
@@ -126,9 +130,18 @@ export const useGameStore = create<GameState>()(
       setInitialized: () => set({ isInitialized: true }),
       winGame: () => set({ gameWon: true }),
       
-      addToVisibleText: (text: string) => set((state) => ({ 
-        visibleText: state.visibleText + text 
-      })),
+      addToVisibleText: (text: string) => set((state) => {
+        const newVisibleText = state.visibleText + text;
+        
+        // Keep only the last MAX_TEXT_LENGTH characters
+        const trimmedText = newVisibleText.length > MAX_TEXT_LENGTH 
+          ? newVisibleText.slice(-MAX_TEXT_LENGTH)
+          : newVisibleText;
+        
+        return { 
+          visibleText: trimmedText 
+        };
+      }),
       
       setCurrentCodeBlock: (block: string) => set({ currentCodeBlock: block }),
       
@@ -139,9 +152,19 @@ export const useGameStore = create<GameState>()(
       setWinningFunction: (functionName: string) => set({ winningFunction: functionName }),
       setWinningFunctionParts: (parts: FunctionNameParts) => set({ winningFunctionParts: parts }),
       
-      addGeneratedFunction: (functionName: string, isPartialMatch: boolean = false) => set((state) => ({
-        generatedFunctions: [...state.generatedFunctions, { functionName, isPartialMatch }]
-      })),
+      addGeneratedFunction: (functionName: string, isPartialMatch: boolean = false) => set((state) => {
+        const newGeneratedFunctions = [...state.generatedFunctions, { functionName, isPartialMatch }];
+        
+        // Keep only the last MAX_FUNCTIONS_HISTORY functions
+        const trimmedFunctions = newGeneratedFunctions.length > MAX_FUNCTIONS_HISTORY 
+          ? newGeneratedFunctions.slice(-MAX_FUNCTIONS_HISTORY)
+          : newGeneratedFunctions;
+        
+        return {
+          generatedFunctions: trimmedFunctions,
+          totalFunctionsHacked: state.totalFunctionsHacked + 1
+        };
+      }),
       
       resetBlockIndex: () => set({ currentBlockIndex: 0 }),
       
@@ -210,6 +233,7 @@ export const useGameStore = create<GameState>()(
       currentCodeBlock: '',
       currentBlockIndex: 0,
       generatedFunctions: [],
+      totalFunctionsHacked: 0,
       winningFunction: formatFunctionName(winningParts),
       winningFunctionParts: winningParts,
       functionVerbs: functionVerbs,

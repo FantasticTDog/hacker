@@ -4,7 +4,7 @@ import { useProbability } from '../hooks/useProbability';
 
 const Dashboard = () => {
   const { 
-    generatedFunctions, 
+    totalFunctionsHacked, 
     charsPerLine, 
     blockLength, 
     money, 
@@ -38,7 +38,7 @@ const Dashboard = () => {
       </div>
       <div className="metric">
         <span className="metric-label">Total Functions Hacked:</span>
-        <span className="metric-value">{Math.max(generatedFunctions.length - 1, 0)}</span>
+        <span className="metric-value">{totalFunctionsHacked}</span>
       </div>
       <div className="metric">
         <span className="metric-label">Bitcoin Stash:</span>
