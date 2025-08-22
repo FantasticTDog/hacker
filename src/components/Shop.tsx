@@ -1,21 +1,15 @@
 import React from 'react';
 import { upgradesComplexity, upgradesSpeed } from '../database/upgrades';
+import { useGameStore } from '../stores/gameStore';
 
-interface ShopProps {
-  speedUpgradesBought: number;
-  complexityUpgradesBought: number;
-  money: number;
-  onBuySpeedUpgrade: () => void;
-  onBuyComplexityUpgrade: () => void;
-}
-
-const Shop = ({ 
-  speedUpgradesBought, 
-  complexityUpgradesBought, 
-  money, 
-  onBuySpeedUpgrade, 
-  onBuyComplexityUpgrade 
-}: ShopProps) => {
+const Shop = () => {
+  const { 
+    speedUpgradesBought, 
+    complexityUpgradesBought, 
+    money, 
+    buySpeedUpgrade, 
+    buyComplexityUpgrade 
+  } = useGameStore();
   const nextSpeedUpgrade = upgradesSpeed[speedUpgradesBought];
   const nextComplexityUpgrade = upgradesComplexity[complexityUpgradesBought];
 
@@ -28,7 +22,7 @@ const Shop = ({
       <div className="shop-items">
         <div 
           className={`shop-item ${canAffordSpeed ? 'affordable' : 'unaffordable'} ${nextSpeedUpgrade ? 'clickable' : ''}`}
-          onClick={canAffordSpeed ? onBuySpeedUpgrade : undefined}
+          onClick={canAffordSpeed ? buySpeedUpgrade : undefined}
         >
           <div className="upgrade-info">
             <span className="upgrade-name">{nextSpeedUpgrade?.name || 'Max Speed Reached'}</span>
@@ -40,7 +34,7 @@ const Shop = ({
         </div>
         <div 
           className={`shop-item ${canAffordComplexity ? 'affordable' : 'unaffordable'} ${nextComplexityUpgrade ? 'clickable' : ''}`}
-          onClick={canAffordComplexity ? onBuyComplexityUpgrade : undefined}
+          onClick={canAffordComplexity ? buyComplexityUpgrade : undefined}
         >
           <div className="upgrade-info">
             <span className="upgrade-name">{nextComplexityUpgrade?.name || 'Max Complexity Reached'}</span>

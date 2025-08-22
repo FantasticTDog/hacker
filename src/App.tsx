@@ -6,27 +6,20 @@ import CodeDisplay from './components/CodeDisplay';
 import Shop from './components/Shop';
 import InitializationSequence from './components/InitializationSequence';
 import { useCodeGenerator } from './hooks/useCodeGenerator';
+import { useGameStore } from './stores/gameStore';
 
 const App = () => {
   const {
     visibleText,
     isFocused,
     charsPerLine,
-    generatedFunctions,
-    blockLength,
-    money,
-    speedUpgradesBought,
-    complexityUpgradesBought,
-    winningFunction,
-    gameWon,
     isInitialized,
-    buySpeedUpgrade,
-    buyComplexityUpgrade,
     handleInitializationComplete,
     handleClick,
     handleBlur,
-    probability,
   } = useCodeGenerator();
+
+  const { winningFunction } = useGameStore();
 
   if (!isInitialized) {
     return <InitializationSequence 
@@ -37,25 +30,11 @@ const App = () => {
 
   return (
     <div className="app">
-      <Dashboard 
-        totalFunctions={generatedFunctions.length}
-        currentSpeed={charsPerLine}
-        blockLength={blockLength}
-        money={money}
-        winningFunction={winningFunction}
-        gameWon={gameWon}
-        probability={probability}
-      />
+      <Dashboard />
       <div className="main-content">
         <div className="left-panel">
-          <FunctionList generatedFunctions={generatedFunctions} />
-          <Shop 
-            speedUpgradesBought={speedUpgradesBought}
-            complexityUpgradesBought={complexityUpgradesBought}
-            money={money}
-            onBuySpeedUpgrade={buySpeedUpgrade}
-            onBuyComplexityUpgrade={buyComplexityUpgrade}
-          />
+          <FunctionList />
+          <Shop />
         </div>
         <CodeDisplay 
           visibleText={visibleText}

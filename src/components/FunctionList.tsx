@@ -1,10 +1,8 @@
 import React, { useEffect, useRef } from 'react';
+import { useGameStore } from '../stores/gameStore';
 
-interface FunctionListProps {
-  generatedFunctions: string[];
-}
-
-const FunctionList = ({ generatedFunctions }: FunctionListProps) => {
+const FunctionList = () => {
+  const { generatedFunctions } = useGameStore();
   const listRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {

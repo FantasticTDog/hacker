@@ -1,19 +1,19 @@
 import React from 'react';
+import { useGameStore } from '../stores/gameStore';
+import { useProbability } from '../hooks/useProbability';
 
-interface DashboardProps {
-  totalFunctions: number;
-  currentSpeed: number;
-  blockLength: number;
-  money: number;
-  winningFunction: string;
-  gameWon: boolean;
-  probability: {
-    percentage: number;
-    totalCombinations: number;
-  };
-  }
-
-const Dashboard = ({ totalFunctions, currentSpeed, blockLength, money, winningFunction, gameWon, probability }: DashboardProps) => {
+const Dashboard = () => {
+  const { 
+    generatedFunctions, 
+    charsPerLine, 
+    blockLength, 
+    money, 
+    winningFunction, 
+    gameWon,
+    resetGame
+  } = useGameStore();
+  
+  const probability = useProbability();
   const renderProgressBar = (value: number, maxValue: number = 20) => {
     const segments = Math.min(value, maxValue);
     return (
@@ -38,7 +38,7 @@ const Dashboard = ({ totalFunctions, currentSpeed, blockLength, money, winningFu
       </div>
       <div className="metric">
         <span className="metric-label">Total Functions Hacked:</span>
-        <span className="metric-value">{Math.max(totalFunctions - 1, 0)}</span>
+        <span className="metric-value">{Math.max(generatedFunctions.length - 1, 0)}</span>
       </div>
       <div className="metric">
         <span className="metric-label">Bitcoin Stash:</span>
@@ -46,7 +46,7 @@ const Dashboard = ({ totalFunctions, currentSpeed, blockLength, money, winningFu
       </div>
       <div className="metric">
         <span className="metric-label">Speed:</span>
-        <span className="metric-value">{renderProgressBar(currentSpeed)}</span>
+        <span className="metric-value">{renderProgressBar(charsPerLine)}</span>
       </div>
       <div className="metric">
         <span className="metric-label">Complexity:</span>
@@ -57,6 +57,18 @@ const Dashboard = ({ totalFunctions, currentSpeed, blockLength, money, winningFu
           🎉 MISSION ACCOMPLISHED! 🎉
         </div>
       )}
+      <div className="dashboard-actions">
+        <button 
+          className="reset-button" 
+          onClick={() => {
+            if (window.confirm('Are you sure you want to reset the game? This will clear all progress.')) {
+              resetGame();
+            }
+          }}
+        >
+          🔄 Reset Game
+        </button>
+      </div>
     </div>
   );
 };
