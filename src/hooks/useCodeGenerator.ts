@@ -1,10 +1,10 @@
 import { useState, useEffect, useCallback } from 'react';
 import codeSnippets from '../database/codeSnippets';
 import topics from '../database/topics';
-import functionVerbs from '../database/functionVerbs';
-import functionNouns from '../database/functionNouns';
 import { useGameStore } from '../stores/gameStore';
 import { useProbability } from './useProbability';
+import getRandomFunctionName from '../utils/getRandomFunctionName';
+import { formatFunctionName } from '../utils/formatFunctionName';
 
 export const useCodeGenerator = () => {
   const [isFocused, setIsFocused] = useState(false);
@@ -14,11 +14,28 @@ export const useCodeGenerator = () => {
 
   // Get state from Zustand store
   const {
-    money, gameWon, isInitialized, speedUpgradesBought, complexityUpgradesBought,
-    charsPerLine, blockLength, visibleText, currentCodeBlock, currentBlockIndex,
-    generatedFunctions, winningFunction, completeFunction, buySpeedUpgrade,
-    buyComplexityUpgrade, setInitialized, addToVisibleText, setCurrentCodeBlock,
-    incrementBlockIndex, setWinningFunction, addGeneratedFunction, resetBlockIndex
+    money,
+    gameWon,
+    isInitialized,
+    speedUpgradesBought,
+    complexityUpgradesBought,
+    charsPerLine,
+    blockLength,
+    visibleText,
+    currentCodeBlock,
+    currentBlockIndex,
+    generatedFunctions,
+    winningFunction,
+    completeFunction,
+    buySpeedUpgrade,
+    buyComplexityUpgrade,
+    setInitialized,
+    addToVisibleText,
+    setCurrentCodeBlock,
+    incrementBlockIndex,
+    setWinningFunction,
+    addGeneratedFunction,
+    resetBlockIndex,
   } = useGameStore();
 
   // Get probability calculation
@@ -26,17 +43,7 @@ export const useCodeGenerator = () => {
 
   // Generate winning function on component mount
   useEffect(() => {
-    const generateWinningFunction = () => {
-      const randomTopic = topics[Math.floor(Math.random() * topics.length)];
-      const randomTopicWord = randomTopic[Math.floor(Math.random() * randomTopic.length)];
-      const capitalizedTopicWord = randomTopicWord.charAt(0).toUpperCase() + randomTopicWord.slice(1);
-      const randomVerb = functionVerbs[Math.floor(Math.random() * functionVerbs.length)];
-      const randomNoun = functionNouns[Math.floor(Math.random() * functionNouns.length)];
-      const capitalizedNoun = randomNoun.charAt(0).toUpperCase() + randomNoun.slice(1);
-      return `${randomVerb}${capitalizedTopicWord}${capitalizedNoun}`;
-    };
-    
-    setWinningFunction(generateWinningFunction());
+    setWinningFunction(formatFunctionName(getRandomFunctionName()));
   }, [setWinningFunction]);
 
   const getRandomTopicWords = () => {
@@ -46,51 +53,50 @@ export const useCodeGenerator = () => {
   };
 
   const generateRandomSnippet = (topicWords: string[]) => {
-    const randomSnippet = codeSnippets[Math.floor(Math.random() * codeSnippets.length)];
+    const randomSnippet =
+      codeSnippets[Math.floor(Math.random() * codeSnippets.length)];
     return randomSnippet.apply(null, topicWords);
-  };
-
-  const generateFunctionName = (topicWord: string, isFirstFunction: boolean = false) => {
-    const capitalizedTopicWord = topicWord.charAt(0).toUpperCase() + topicWord.slice(1);
-    const randomNoun = functionNouns[Math.floor(Math.random() * functionNouns.length)];
-    const capitalizedNoun = randomNoun.charAt(0).toUpperCase() + randomNoun.slice(1);
-    const functionName = `${functionVerbs[Math.floor(Math.random() * functionVerbs.length)]}${capitalizedTopicWord}${capitalizedNoun}`;
-    const functionString = `${isFirstFunction ? '' : '\n'}function ${functionName}() {`;
-    
-    return { functionName, functionString };
   };
 
   const generateCodeBlock = () => {
     const topicWords = getRandomTopicWords();
     const codeBlock: string[] = [];
-    
+
     // Check if this is the very first function (when visibleText is empty)
     const isFirstFunction = visibleText.length === 0;
-    
+
     // Generate a function name and add it to the block
-    const { functionName, functionString } = generateFunctionName(topicWords[0], isFirstFunction);
+    const functionParts = getRandomFunctionName(topicWords[0]);
+    const functionName = formatFunctionName(functionParts);
+    const functionString = `${
+      isFirstFunction ? '' : '\n'
+    }function ${functionName}() {`;
+
     codeBlock.push(functionString);
-    
+
     for (let i = 0; i < blockLength; i++) {
       const snippet = generateRandomSnippet(topicWords);
       codeBlock.push(snippet);
     }
-    
+
     // Close the function
     codeBlock.push('}');
-    
-    const codeBlockString = codeBlock.join("\n");
+
+    const codeBlockString = codeBlock.join('\n');
     return { codeBlockString, functionName };
   };
 
   const startNewSnippet = useCallback(() => {
-    if (currentCodeBlock.length === 0 || currentBlockIndex >= currentCodeBlock.length) {
+    if (
+      currentCodeBlock.length === 0 ||
+      currentBlockIndex >= currentCodeBlock.length
+    ) {
       const { codeBlockString, functionName } = generateCodeBlock();
       setCurrentCodeBlock(codeBlockString);
       resetBlockIndex();
       // Add the function name to the list when we start generating it
       addGeneratedFunction(functionName);
-      
+
       // Immediately start typing the first characters
       const charsToAdd = Math.min(charsPerLine, codeBlockString.length);
       const newChars = codeBlockString.substring(0, charsToAdd);
@@ -98,42 +104,67 @@ export const useCodeGenerator = () => {
       incrementBlockIndex(charsToAdd);
     }
     setIsTyping(true);
-  }, [currentCodeBlock.length, currentBlockIndex, charsPerLine, addGeneratedFunction, addToVisibleText, incrementBlockIndex]);
+  }, [
+    currentCodeBlock.length,
+    currentBlockIndex,
+    charsPerLine,
+    addGeneratedFunction,
+    addToVisibleText,
+    incrementBlockIndex,
+  ]);
 
   const typeNextCharacter = useCallback(() => {
     if (currentBlockIndex < currentCodeBlock.length) {
       const remainingChars = currentCodeBlock.length - currentBlockIndex;
       const charsToAdd = Math.min(charsPerLine, remainingChars);
-      const newChars = currentCodeBlock.substring(currentBlockIndex, currentBlockIndex + charsToAdd);
-      
+      const newChars = currentCodeBlock.substring(
+        currentBlockIndex,
+        currentBlockIndex + charsToAdd
+      );
+
       addToVisibleText(newChars);
       incrementBlockIndex(charsToAdd);
     } else {
       addToVisibleText('\n');
       setIsTyping(false);
-      
+
       // Complete the function (this handles money and win condition)
       if (generatedFunctions.length > 0) {
         const lastFunction = generatedFunctions[generatedFunctions.length - 1];
         completeFunction(lastFunction);
-        
+
         // Check win condition
         if (lastFunction === winningFunction && !gameWon) {
-          alert(`🎉 HACKER VICTORY! You successfully hacked: ${winningFunction}! 🎉`);
+          alert(
+            `🎉 HACKER VICTORY! You successfully hacked: ${winningFunction}! 🎉`
+          );
         }
       }
     }
-  }, [currentBlockIndex, currentCodeBlock, charsPerLine, generatedFunctions, winningFunction, gameWon, addToVisibleText, incrementBlockIndex, completeFunction]);
+  }, [
+    currentBlockIndex,
+    currentCodeBlock,
+    charsPerLine,
+    generatedFunctions,
+    winningFunction,
+    gameWon,
+    addToVisibleText,
+    incrementBlockIndex,
+    completeFunction,
+  ]);
 
-  const handleKeyPress = useCallback((event: KeyboardEvent) => {
-    if (/^[a-zA-Z0-9\s]$/.test(event.key)) {
-      if (!isTyping) {
-        startNewSnippet();
-      } else {
-        typeNextCharacter();
+  const handleKeyPress = useCallback(
+    (event: KeyboardEvent) => {
+      if (/^[a-zA-Z0-9\s]$/.test(event.key)) {
+        if (!isTyping) {
+          startNewSnippet();
+        } else {
+          typeNextCharacter();
+        }
       }
-    }
-  }, [isTyping, startNewSnippet, typeNextCharacter]);
+    },
+    [isTyping, startNewSnippet, typeNextCharacter]
+  );
 
   const handleClick = () => {
     setIsFocused(true);

@@ -1,9 +1,10 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { upgradesSpeed, upgradesComplexity } from '../database/upgrades';
-import topics from '../database/topics';
-import functionVerbs from '../database/functionVerbs';
-import functionNouns from '../database/functionNouns';
+import getRandomFunctionName from '../utils/getRandomFunctionName';
+import { formatFunctionName } from '../utils/formatFunctionName';
+
+const INITIALIZED = true
 
 interface GameState {
   // Core game state
@@ -51,7 +52,7 @@ export const useGameStore = create<GameState>()(
       // Initial state
       money: 0,
       gameWon: false,
-      isInitialized: false,
+      isInitialized: INITIALIZED,
       speedUpgradesBought: 0,
       complexityUpgradesBought: 0,
       charsPerLine: 1,
@@ -122,23 +123,11 @@ export const useGameStore = create<GameState>()(
       
       setMoney: (amount: number) => set({ money: amount }),
   
-  // Reset all state to initial values
   resetGame: () => {
-    // Generate a new winning function for the reset game
-    const generateWinningFunction = () => {
-      const randomTopic = topics[Math.floor(Math.random() * topics.length)];
-      const randomTopicWord = randomTopic[Math.floor(Math.random() * randomTopic.length)];
-      const capitalizedTopicWord = randomTopicWord.charAt(0).toUpperCase() + randomTopicWord.slice(1);
-      const randomVerb = functionVerbs[Math.floor(Math.random() * functionVerbs.length)];
-      const randomNoun = functionNouns[Math.floor(Math.random() * functionNouns.length)];
-      const capitalizedNoun = randomNoun.charAt(0).toUpperCase() + randomNoun.slice(1);
-      return `${randomVerb}${capitalizedTopicWord}${capitalizedNoun}`;
-    };
-
     set({
       money: 0,
       gameWon: false,
-      isInitialized: false,
+      isInitialized: INITIALIZED,
       speedUpgradesBought: 0,
       complexityUpgradesBought: 0,
       charsPerLine: 1,
@@ -147,7 +136,7 @@ export const useGameStore = create<GameState>()(
       currentCodeBlock: '',
       currentBlockIndex: 0,
       generatedFunctions: [],
-      winningFunction: generateWinningFunction(),
+      winningFunction: formatFunctionName(getRandomFunctionName()),
     });
   },
     }),
