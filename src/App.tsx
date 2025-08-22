@@ -18,7 +18,6 @@ const App = () => {
     handleClick,
     handleBlur,
   } = useCodeGenerator();
-  console.log('visibleText', visibleText.length)
 
   const { winningFunction } = useGameStore();
 

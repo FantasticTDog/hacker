@@ -9,7 +9,7 @@ const Dashboard = () => {
     blockLength, 
     money, 
     winningFunction, 
-    gameWon,
+    topicsLevel,
     resetGame
   } = useGameStore();
   
@@ -32,7 +32,7 @@ const Dashboard = () => {
     <div className="dashboard">
       <h3>Hacker Performance Dashboard</h3>
       <div className="metric">
-        <span className="metric-label">Target Function:</span>
+        <span className="metric-label">Level {topicsLevel + 1} Target:</span>
         <span className="metric-value target-function">{winningFunction || 'Loading...'}</span>
         <span className="metric-value probability">{probability.percentage}% (1 / {probability.totalCombinations})</span>
       </div>
@@ -52,11 +52,10 @@ const Dashboard = () => {
         <span className="metric-label">Complexity:</span>
         <span className="metric-value">{renderProgressBar(blockLength)}</span>
       </div>
-      {gameWon && (
-        <div className="victory-message">
-          🎉 MISSION ACCOMPLISHED! 🎉
-        </div>
-      )}
+      <div className="metric">
+        <span className="metric-label">Current Level:</span>
+        <span className="metric-value">Level {topicsLevel + 1}</span>
+      </div>
       <div className="dashboard-actions">
         <button 
           className="reset-button" 

@@ -48,6 +48,7 @@ export const useCodeGenerator = () => {
     removeVerb,
     removeNoun,
     removeTopic,
+    advanceLevel,
   } = useGameStore();
 
   const probability = useProbability();
@@ -160,17 +161,10 @@ export const useCodeGenerator = () => {
       addToVisibleText('\n');
       setIsTyping(false);
 
-      // Complete the function (this handles money and win condition)
+      // Complete the function (this handles money and level progression)
       if (generatedFunctions.length > 0) {
         const lastFunction = generatedFunctions[generatedFunctions.length - 1];
         completeFunction(lastFunction.functionName);
-
-        // Check win condition
-        if (lastFunction.functionName === winningFunction && !gameWon) {
-          alert(
-            `🎉 HACKER VICTORY! You successfully hacked: ${winningFunction}! 🎉`
-          );
-        }
       }
     }
   }, [

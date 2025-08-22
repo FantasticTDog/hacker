@@ -11,7 +11,7 @@ const INITIALIZED = true
 const INITIAL_SPEED = 20
 const INITIAL_COMPLEXITY = 1
 const MAX_FUNCTIONS_HISTORY = 250
-const MAX_TEXT_LENGTH = 10000
+const MAX_TEXT_LENGTH = 3000
 
 interface GameState {
   // Core game state
@@ -61,6 +61,9 @@ interface GameState {
   removeVerb: () => void;
   removeNoun: () => void;
   removeTopic: () => void;
+  
+  // Level progression
+  advanceLevel: () => void;
 }
 
 const getMoneyPerFunction = (blockLength: number) => {
@@ -92,13 +95,17 @@ export const useGameStore = create<GameState>()(
 
       // Actions
       completeFunction: (functionName: string) => {
-        const { blockLength, winningFunction, gameWon } = get();
+        const { blockLength, winningFunction } = get();
         const moneyEarned = getMoneyPerFunction(blockLength);
         
         set((state) => ({
-          money: state.money + moneyEarned,
-          gameWon: !gameWon && functionName === winningFunction
+          money: state.money + moneyEarned
         }));
+        
+        // Check if this is the winning function
+        if (functionName === winningFunction) {
+          get().advanceLevel();
+        }
       },
 
       buySpeedUpgrade: () => {
@@ -216,9 +223,26 @@ export const useGameStore = create<GameState>()(
             topics: state.topics.filter(t => t !== topicArrayToRemove)
           }));
         }
+            },
+      
+      advanceLevel: () => {
+        const { topicsLevel } = get();
+        const newLevel = topicsLevel + 1;
+        
+        if (topics[newLevel]) {
+          const winningParts = getRandomFunctionName(functionVerbs, functionNouns, topics[newLevel]);
+          set({
+            topicsLevel: newLevel,
+            topics: topics[newLevel],
+            winningFunction: formatFunctionName(winningParts),
+            winningFunctionParts: winningParts,
+            functionVerbs: functionVerbs,
+            functionNouns: functionNouns,
+          });
+        }
       },
-  
-  resetGame: () => {
+      
+      resetGame: () => {
     const winningParts = getRandomFunctionName(functionVerbs, functionNouns, topics[0]);
     set({
       money: 0,
