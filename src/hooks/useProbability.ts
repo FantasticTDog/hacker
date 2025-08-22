@@ -1,9 +1,9 @@
 import { useMemo } from 'react';
-import functionVerbs from '../database/functionVerbs';
-import functionNouns from '../database/functionNouns';
-import topics from '../database/topics';
+import { useGameStore } from '../stores/gameStore';
 
 export const useProbability = () => {
+  const { functionVerbs, functionNouns, topics } = useGameStore();
+  
   return useMemo(() => {
     const verbCount = functionVerbs.length;
     const nounCount = functionNouns.length;
@@ -16,5 +16,5 @@ export const useProbability = () => {
       percentage,
       totalCombinations,
     };
-  }, []);
+  }, [functionVerbs, functionNouns, topics]);
 };

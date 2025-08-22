@@ -1,15 +1,17 @@
-import functionVerbs from "../database/functionVerbs";
-import functionNouns from "../database/functionNouns";
-import getRandomTopicWords from "./getRanomTopicWords";
-
 export interface FunctionNameParts {
   verb: string;
   topic: string;
   noun: string;
 }
 
-const getRandomFunctionName = (topicWord?: string): FunctionNameParts => {
-  const randomTopicWord = topicWord || getRandomTopicWords()[0]
+const getRandomFunctionName = (
+  functionVerbs: string[],
+  functionNouns: string[],
+  topics: string[][],
+  topicWord?: string
+): FunctionNameParts => {
+  const randomTopic = topics[Math.floor(Math.random() * topics.length)];
+  const randomTopicWord = topicWord || randomTopic[Math.floor(Math.random() * randomTopic.length)];
   const randomVerb = functionVerbs[Math.floor(Math.random() * functionVerbs.length)];
   const randomNoun = functionNouns[Math.floor(Math.random() * functionNouns.length)];
   

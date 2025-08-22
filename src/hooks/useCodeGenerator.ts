@@ -27,6 +27,9 @@ export const useCodeGenerator = () => {
     generatedFunctions,
     winningFunction,
     winningFunctionParts,
+    functionVerbs,
+    functionNouns,
+    topics,
     completeFunction,
     buySpeedUpgrade,
     buyComplexityUpgrade,
@@ -65,10 +68,10 @@ export const useCodeGenerator = () => {
   }, [winningFunctionParts]);
 
   useEffect(() => {
-    const winningParts = getRandomFunctionName();
+    const winningParts = getRandomFunctionName(functionVerbs, functionNouns, topics);
     setWinningFunction(formatFunctionName(winningParts));
     setWinningFunctionParts(winningParts);
-  }, [setWinningFunction, setWinningFunctionParts]);
+  }, [setWinningFunction, setWinningFunctionParts, functionVerbs, functionNouns, topics]);
 
   const startNewSnippet = useCallback(() => {
     if (
@@ -77,7 +80,10 @@ export const useCodeGenerator = () => {
     ) {
       const { codeBlockString, functionName, functionParts } = generateCodeBlock(
         visibleText,
-        blockLength
+        blockLength,
+        functionVerbs,
+        functionNouns,
+        topics
       );
       setCurrentCodeBlock(codeBlockString);
       resetBlockIndex();
@@ -101,6 +107,10 @@ export const useCodeGenerator = () => {
     blockLength,
     resetBlockIndex,
     setCurrentCodeBlock,
+    setCurrentFunctionParts,
+    functionVerbs,
+    functionNouns,
+    topics,
   ]);
 
   const typeNextCharacter = useCallback(() => {

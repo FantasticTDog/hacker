@@ -3,6 +3,9 @@ import { persist } from 'zustand/middleware';
 import { upgradesSpeed, upgradesComplexity } from '../database/upgrades';
 import getRandomFunctionName, { FunctionNameParts } from '../utils/getRandomFunctionName';
 import formatFunctionName from '../utils/formatFunctionName';
+import functionVerbs from '../database/functionVerbs';
+import functionNouns from '../database/functionNouns';
+import topics from '../database/topics';
 
 const INITIALIZED = true
 const INITIAL_SPEED = 20
@@ -29,6 +32,11 @@ interface GameState {
   // Target function
   winningFunction: string;
   winningFunctionParts: FunctionNameParts;
+  
+  // Data arrays
+  functionVerbs: string[];
+  functionNouns: string[];
+  topics: string[][];
   
   // Actions
   completeFunction: (functionName: string) => void;
@@ -67,6 +75,9 @@ export const useGameStore = create<GameState>()(
       generatedFunctions: [],
       winningFunction: '',
       winningFunctionParts: { verb: '', topic: '', noun: '' },
+      functionVerbs: functionVerbs,
+      functionNouns: functionNouns,
+      topics: topics,
 
       // Actions
       completeFunction: (functionName: string) => {
@@ -130,7 +141,7 @@ export const useGameStore = create<GameState>()(
       setMoney: (amount: number) => set({ money: amount }),
   
   resetGame: () => {
-    const winningParts = getRandomFunctionName();
+    const winningParts = getRandomFunctionName(functionVerbs, functionNouns, topics);
     set({
       money: 0,
       gameWon: false,
@@ -146,6 +157,9 @@ export const useGameStore = create<GameState>()(
       generatedFunctions: [],
       winningFunction: formatFunctionName(winningParts),
       winningFunctionParts: winningParts,
+      functionVerbs: functionVerbs,
+      functionNouns: functionNouns,
+      topics: topics,
     });
   },
     }),
