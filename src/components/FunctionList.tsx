@@ -15,12 +15,12 @@ const FunctionList = () => {
     <div className="function-list">
       <h3>Hacked Functions:</h3>
       <div className="function-list-content" ref={listRef}>
-        {generatedFunctions.map((funcName, index) => (
-          <div key={index} className={`function-item ${index === generatedFunctions.length - 1 ? 'wip' : 'completed'}`}>
+        {generatedFunctions.map((func, index) => (
+          <div key={index} className={`function-item ${index === generatedFunctions.length - 1 ? 'wip' : 'completed'} ${func.isPartialMatch ? 'partial-match' : ''}`}>
             <span className="status-indicator">
-              {index === generatedFunctions.length - 1 ? '🔄' : '✅'}
+              {index === generatedFunctions.length - 1 ? '🔄' : func.isPartialMatch ? '🎯' : '✅'}
             </span>
-            <span className="function-name">{funcName}</span>
+            <span className="function-name">{func.functionName}</span>
           </div>
         ))}
       </div>

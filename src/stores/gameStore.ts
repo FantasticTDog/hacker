@@ -27,7 +27,7 @@ interface GameState {
   visibleText: string;
   currentCodeBlock: string;
   currentBlockIndex: number;
-  generatedFunctions: string[];
+  generatedFunctions: Array<{ functionName: string; isPartialMatch: boolean }>;
   
   // Target function
   winningFunction: string;
@@ -49,7 +49,7 @@ interface GameState {
   incrementBlockIndex: (amount: number) => void;
   setWinningFunction: (functionName: string) => void;
   setWinningFunctionParts: (parts: FunctionNameParts) => void;
-  addGeneratedFunction: (functionName: string) => void;
+  addGeneratedFunction: (functionName: string, isPartialMatch?: boolean) => void;
   resetBlockIndex: () => void;
   setMoney: (amount: number) => void;
   
@@ -137,8 +137,8 @@ export const useGameStore = create<GameState>()(
       setWinningFunction: (functionName: string) => set({ winningFunction: functionName }),
       setWinningFunctionParts: (parts: FunctionNameParts) => set({ winningFunctionParts: parts }),
       
-      addGeneratedFunction: (functionName: string) => set((state) => ({
-        generatedFunctions: [...state.generatedFunctions, functionName]
+      addGeneratedFunction: (functionName: string, isPartialMatch: boolean = false) => set((state) => ({
+        generatedFunctions: [...state.generatedFunctions, { functionName, isPartialMatch }]
       })),
       
       resetBlockIndex: () => set({ currentBlockIndex: 0 }),
@@ -150,6 +150,7 @@ export const useGameStore = create<GameState>()(
         const { winningFunctionParts, functionVerbs } = get();
         // Filter out the winning verb
         const availableVerbs = functionVerbs.filter(v => v !== winningFunctionParts.verb);
+        console.log('remaining Verbs:', availableVerbs.length - 1)
         if (availableVerbs.length > 0) {
           // Remove a random verb from the available ones
           const randomIndex = Math.floor(Math.random() * availableVerbs.length);
@@ -164,6 +165,7 @@ export const useGameStore = create<GameState>()(
         const { winningFunctionParts, functionNouns } = get();
         // Filter out the winning noun
         const availableNouns = functionNouns.filter(n => n !== winningFunctionParts.noun);
+        console.log('remaining Nouns:', availableNouns.length - 1)
         if (availableNouns.length > 0) {
           // Remove a random noun from the available ones
           const randomIndex = Math.floor(Math.random() * availableNouns.length);
@@ -178,6 +180,7 @@ export const useGameStore = create<GameState>()(
         const { winningFunctionParts, topics } = get();
         // Filter out the winning topic
         const availableTopics = topics.filter(t => !t.includes(winningFunctionParts.topic));
+        console.log('remaining Topics:', availableTopics.length - 1)
         if (availableTopics.length > 0) {
           // Remove a random topic from the available ones
           const randomIndex = Math.floor(Math.random() * availableTopics.length);

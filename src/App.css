@@ -235,6 +235,15 @@ body {
   color: #e0e0e0;
 }
 
+.function-item.partial-match {
+  background-color: rgba(255, 215, 0, 0.1);
+  border-left: 3px solid #ffd700;
+}
+
+.function-item.partial-match .status-indicator {
+  color: #ffd700;
+}
+
 .hacker-display {
   flex: 1;
   height: 100%;

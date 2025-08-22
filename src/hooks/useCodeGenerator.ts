@@ -59,6 +59,12 @@ export const useCodeGenerator = () => {
       const hasTopicMatch = completedParts.topic === winningFunctionParts.topic;
       const hasNounMatch = completedParts.noun === winningFunctionParts.noun;
 
+      const isPartialMatch = hasVerbMatch || hasTopicMatch || hasNounMatch;
+      
+      if (isPartialMatch) {
+        // console.log('isPartialMatch', isPartialMatch, 'hasVerbMatch', hasVerbMatch, 'hasTopicMatch', hasTopicMatch, 'hasNounMatch', hasNounMatch)
+      }
+      
       if (hasVerbMatch) {
         removeVerb();
       }
@@ -68,6 +74,8 @@ export const useCodeGenerator = () => {
       if (hasTopicMatch) {
         removeTopic();
       }
+
+      return isPartialMatch;
     },
     [winningFunctionParts, removeVerb, removeNoun, removeTopic]
   );
@@ -107,7 +115,10 @@ export const useCodeGenerator = () => {
         );
       setCurrentCodeBlock(codeBlockString);
       resetBlockIndex();
-      addGeneratedFunction(functionName);
+      
+      // Check if this function has partial matches
+      const isPartialMatch = compareFunctionParts(functionParts);
+      addGeneratedFunction(functionName, isPartialMatch);
       setCurrentFunctionParts(functionParts);
 
       const charsToAdd = Math.min(charsPerLine, codeBlockString.length);
@@ -151,15 +162,10 @@ export const useCodeGenerator = () => {
       // Complete the function (this handles money and win condition)
       if (generatedFunctions.length > 0) {
         const lastFunction = generatedFunctions[generatedFunctions.length - 1];
-        completeFunction(lastFunction);
-
-        // Compare function parts with winning function
-        if (currentFunctionParts) {
-          compareFunctionParts(currentFunctionParts);
-        }
+        completeFunction(lastFunction.functionName);
 
         // Check win condition
-        if (lastFunction === winningFunction && !gameWon) {
+        if (lastFunction.functionName === winningFunction && !gameWon) {
           alert(
             `🎉 HACKER VICTORY! You successfully hacked: ${winningFunction}! 🎉`
           );
