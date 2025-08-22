@@ -1,6 +1,6 @@
 import functionVerbs from "../database/functionVerbs";
 import functionNouns from "../database/functionNouns";
-import topics from "../database/topics";
+import getRandomTopicWords from "./getRanomTopicWords";
 
 export interface FunctionNameParts {
   verb: string;
@@ -9,13 +9,7 @@ export interface FunctionNameParts {
 }
 
 const getRandomFunctionName = (topicWord?: string): FunctionNameParts => {
-  let randomTopicWord = topicWord;
-  
-  if (!randomTopicWord) {
-    const randomTopic = topics[Math.floor(Math.random() * topics.length)];
-    randomTopicWord = randomTopic[Math.floor(Math.random() * randomTopic.length)];
-  }
-  
+  const randomTopicWord = topicWord || getRandomTopicWords()[0]
   const randomVerb = functionVerbs[Math.floor(Math.random() * functionVerbs.length)];
   const randomNoun = functionNouns[Math.floor(Math.random() * functionNouns.length)];
   

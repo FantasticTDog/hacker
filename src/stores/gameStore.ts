@@ -2,7 +2,7 @@ import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { upgradesSpeed, upgradesComplexity } from '../database/upgrades';
 import getRandomFunctionName from '../utils/getRandomFunctionName';
-import { formatFunctionName } from '../utils/formatFunctionName';
+import formatFunctionName from '../utils/formatFunctionName';
 
 const INITIALIZED = true
 

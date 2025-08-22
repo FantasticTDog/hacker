@@ -1,10 +1,9 @@
 import { useState, useEffect, useCallback } from 'react';
-import codeSnippets from '../database/codeSnippets';
-import topics from '../database/topics';
 import { useGameStore } from '../stores/gameStore';
 import { useProbability } from './useProbability';
 import getRandomFunctionName from '../utils/getRandomFunctionName';
-import { formatFunctionName } from '../utils/formatFunctionName';
+import generateCodeBlock from '../utils/generateCodeBlock';
+import formatFunctionName from '../utils/formatFunctionName';
 
 export const useCodeGenerator = () => {
   const [isFocused, setIsFocused] = useState(false);
@@ -38,66 +37,22 @@ export const useCodeGenerator = () => {
     resetBlockIndex,
   } = useGameStore();
 
-  // Get probability calculation
   const probability = useProbability();
 
-  // Generate winning function on component mount
   useEffect(() => {
     setWinningFunction(formatFunctionName(getRandomFunctionName()));
   }, [setWinningFunction]);
-
-  const getRandomTopicWords = () => {
-    const randomTopic = topics[Math.floor(Math.random() * topics.length)];
-    const shuffled = [...randomTopic].sort(() => 0.5 - Math.random());
-    return shuffled.slice(0, 3);
-  };
-
-  const generateRandomSnippet = (topicWords: string[]) => {
-    const randomSnippet =
-      codeSnippets[Math.floor(Math.random() * codeSnippets.length)];
-    return randomSnippet.apply(null, topicWords);
-  };
-
-  const generateCodeBlock = () => {
-    const topicWords = getRandomTopicWords();
-    const codeBlock: string[] = [];
-
-    // Check if this is the very first function (when visibleText is empty)
-    const isFirstFunction = visibleText.length === 0;
-
-    // Generate a function name and add it to the block
-    const functionParts = getRandomFunctionName(topicWords[0]);
-    const functionName = formatFunctionName(functionParts);
-    const functionString = `${
-      isFirstFunction ? '' : '\n'
-    }function ${functionName}() {`;
-
-    codeBlock.push(functionString);
-
-    for (let i = 0; i < blockLength; i++) {
-      const snippet = generateRandomSnippet(topicWords);
-      codeBlock.push(snippet);
-    }
-
-    // Close the function
-    codeBlock.push('}');
-
-    const codeBlockString = codeBlock.join('\n');
-    return { codeBlockString, functionName };
-  };
 
   const startNewSnippet = useCallback(() => {
     if (
       currentCodeBlock.length === 0 ||
       currentBlockIndex >= currentCodeBlock.length
     ) {
-      const { codeBlockString, functionName } = generateCodeBlock();
+      const { codeBlockString, functionName } = generateCodeBlock(visibleText, blockLength);
       setCurrentCodeBlock(codeBlockString);
       resetBlockIndex();
-      // Add the function name to the list when we start generating it
       addGeneratedFunction(functionName);
 
-      // Immediately start typing the first characters
       const charsToAdd = Math.min(charsPerLine, codeBlockString.length);
       const newChars = codeBlockString.substring(0, charsToAdd);
       addToVisibleText(newChars);
