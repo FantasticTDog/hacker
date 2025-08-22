@@ -10,8 +10,6 @@ import formatFunctionName from '../utils/formatFunctionName';
 export const useCodeGenerator = () => {
   const [isFocused, setIsFocused] = useState(false);
   const [isTyping, setIsTyping] = useState(false);
-  const [currentFunctionParts, setCurrentFunctionParts] =
-    useState<FunctionNameParts | null>(null);
 
   const DISPLAY_FIELD_ID = 'hacker-display-field';
 
@@ -33,7 +31,6 @@ export const useCodeGenerator = () => {
     functionVerbs,
     functionNouns,
     topics,
-    topicsLevel,
     completeFunction,
     buySpeedUpgrade,
     buyComplexityUpgrade,
@@ -48,9 +45,8 @@ export const useCodeGenerator = () => {
     removeVerb,
     removeNoun,
     removeTopic,
-    advanceLevel,
   } = useGameStore();
-
+  
   const probability = useProbability();
 
   const compareFunctionParts = useCallback(
@@ -121,7 +117,6 @@ export const useCodeGenerator = () => {
       // Check if this function has partial matches
       const isPartialMatch = compareFunctionParts(functionParts);
       addGeneratedFunction(functionName, isPartialMatch);
-      setCurrentFunctionParts(functionParts);
 
       const charsToAdd = Math.min(charsPerLine, codeBlockString.length);
       const newChars = codeBlockString.substring(0, charsToAdd);
@@ -140,10 +135,10 @@ export const useCodeGenerator = () => {
     blockLength,
     resetBlockIndex,
     setCurrentCodeBlock,
-    setCurrentFunctionParts,
     functionVerbs,
     functionNouns,
     topics,
+    compareFunctionParts,
   ]);
 
   const typeNextCharacter = useCallback(() => {
@@ -171,14 +166,10 @@ export const useCodeGenerator = () => {
     currentBlockIndex,
     currentCodeBlock,
     charsPerLine,
-    generatedFunctions,
-    winningFunction,
-    gameWon,
     addToVisibleText,
     incrementBlockIndex,
     completeFunction,
-    currentFunctionParts,
-    compareFunctionParts,
+    generatedFunctions,
   ]);
 
   const handleKeyPress = useCallback(

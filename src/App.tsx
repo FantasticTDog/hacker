@@ -5,6 +5,7 @@ import FunctionList from './components/FunctionList';
 import CodeDisplay from './components/CodeDisplay';
 import Shop from './components/Shop';
 import InitializationSequence from './components/InitializationSequence';
+import LevelUpModal from './components/LevelUpModal';
 import { useCodeGenerator } from './hooks/useCodeGenerator';
 import { useGameStore } from './stores/gameStore';
 
@@ -19,7 +20,12 @@ const App = () => {
     handleBlur,
   } = useCodeGenerator();
 
-  const { winningFunction } = useGameStore();
+  const { 
+    winningFunction, 
+    showLevelUpModal, 
+    levelUpData,
+    hideLevelUpModal 
+  } = useGameStore();
 
   if (!isInitialized) {
     return <InitializationSequence 
@@ -44,6 +50,13 @@ const App = () => {
           onBlur={handleBlur}
         />
       </div>
+      
+      <LevelUpModal
+        isVisible={showLevelUpModal}
+        hackedFunction={levelUpData?.hackedFunction || ''}
+        newLevel={levelUpData?.newLevel || 1}
+        onContinue={hideLevelUpModal}
+      />
     </div>
   );
 };

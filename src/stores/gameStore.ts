@@ -12,6 +12,7 @@ const INITIAL_SPEED = 20
 const INITIAL_COMPLEXITY = 1
 const MAX_FUNCTIONS_HISTORY = 250
 const MAX_TEXT_LENGTH = 3000
+const IS_DEBUG = false
 
 interface GameState {
   // Core game state
@@ -42,6 +43,10 @@ interface GameState {
   topics: string[][];
   topicsLevel: number;
   
+  // Modal state
+  showLevelUpModal: boolean;
+  levelUpData: { hackedFunction: string; newLevel: number } | null;
+  
   // Actions
   completeFunction: (functionName: string) => void;
   buySpeedUpgrade: () => void;
@@ -64,6 +69,10 @@ interface GameState {
   
   // Level progression
   advanceLevel: () => void;
+  
+  // Modal actions
+  displayLevelUpModal: (hackedFunction: string, newLevel: number) => void;
+  hideLevelUpModal: () => void;
 }
 
 const getMoneyPerFunction = (blockLength: number) => {
@@ -88,10 +97,12 @@ export const useGameStore = create<GameState>()(
       totalFunctionsHacked: 0,
       winningFunction: '',
       winningFunctionParts: { verb: '', topic: '', noun: '' },
-      functionVerbs: functionVerbs,
-      functionNouns: functionNouns,
-      topics: topics[0],
+      functionVerbs: IS_DEBUG ? [functionVerbs[0]] : functionVerbs,
+      functionNouns: IS_DEBUG ? [functionNouns[0]] : functionNouns,
+      topics: IS_DEBUG ? [topics[0][0]] : topics[0],
       topicsLevel: 0,
+      showLevelUpModal: false,
+      levelUpData: null,
 
       // Actions
       completeFunction: (functionName: string) => {
@@ -182,7 +193,6 @@ export const useGameStore = create<GameState>()(
         const { winningFunctionParts, functionVerbs } = get();
         // Filter out the winning verb
         const availableVerbs = functionVerbs.filter(v => v !== winningFunctionParts.verb);
-        console.log('remaining Verbs:', availableVerbs.length - 1)
         if (availableVerbs.length > 0) {
           // Remove a random verb from the available ones
           const randomIndex = Math.floor(Math.random() * availableVerbs.length);
@@ -197,7 +207,6 @@ export const useGameStore = create<GameState>()(
         const { winningFunctionParts, functionNouns } = get();
         // Filter out the winning noun
         const availableNouns = functionNouns.filter(n => n !== winningFunctionParts.noun);
-        console.log('remaining Nouns:', availableNouns.length - 1)
         if (availableNouns.length > 0) {
           // Remove a random noun from the available ones
           const randomIndex = Math.floor(Math.random() * availableNouns.length);
@@ -214,7 +223,6 @@ export const useGameStore = create<GameState>()(
         const availableTopics = topics.filter(topicArray => 
           !topicArray.includes(winningFunctionParts.topic)
         );
-        console.log('remaining Topics:', availableTopics.length - 1)
         if (availableTopics.length > 0) {
           // Remove a random topic array from the available ones
           const randomIndex = Math.floor(Math.random() * availableTopics.length);
@@ -226,10 +234,13 @@ export const useGameStore = create<GameState>()(
             },
       
       advanceLevel: () => {
-        const { topicsLevel } = get();
+        const { topicsLevel, winningFunction } = get();
         const newLevel = topicsLevel + 1;
         
         if (topics[newLevel]) {
+          // Show the level up modal first
+          get().displayLevelUpModal(winningFunction, newLevel + 1);
+          
           const winningParts = getRandomFunctionName(functionVerbs, functionNouns, topics[newLevel]);
           set({
             topicsLevel: newLevel,
@@ -242,8 +253,21 @@ export const useGameStore = create<GameState>()(
         }
       },
       
+      displayLevelUpModal: (hackedFunction: string, newLevel: number) => set({
+        showLevelUpModal: true,
+        levelUpData: { hackedFunction, newLevel }
+      }),
+      
+      hideLevelUpModal: () => set({
+        showLevelUpModal: false,
+        levelUpData: null
+      }),
+      
       resetGame: () => {
-    const winningParts = getRandomFunctionName(functionVerbs, functionNouns, topics[0]);
+        const usedVerbs = IS_DEBUG ? [functionVerbs[0]] : functionVerbs;
+        const usedNouns = IS_DEBUG ? [functionNouns[0]] : functionNouns;
+        const usedTopics = IS_DEBUG ? [topics[0][0]] : topics[0];
+    const winningParts = getRandomFunctionName(usedVerbs, usedNouns, usedTopics);
     set({
       money: 0,
       gameWon: false,
@@ -260,9 +284,9 @@ export const useGameStore = create<GameState>()(
       totalFunctionsHacked: 0,
       winningFunction: formatFunctionName(winningParts),
       winningFunctionParts: winningParts,
-      functionVerbs: functionVerbs,
-      functionNouns: functionNouns,
-      topics: topics[0], // Only store level 0 topics
+      functionVerbs: usedVerbs,
+      functionNouns: usedNouns,
+      topics: usedTopics, // Only store level 0 topics
       topicsLevel: 0,
     });
   },
