@@ -7,8 +7,8 @@ import functionVerbs from '../database/functionVerbs';
 import functionNouns from '../database/functionNouns';
 import topics from '../database/topics';
 
-const INITIALIZED = true
-const INITIAL_SPEED = 20
+const INITIALIZED = false
+const INITIAL_SPEED = 1
 const INITIAL_COMPLEXITY = 1
 const MAX_FUNCTIONS_HISTORY = 250
 const MAX_TEXT_LENGTH = 3000
